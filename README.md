@@ -29,6 +29,6 @@ sudo apt install \
 
 ## Cloning the repository
 
-This project depends on our fork of the [flaschen-taschen](https://github.com/hzeller/flaschen-taschen) project. It is included as a submodule in the [dependencies](dependencies) folder of this project. As such, make sure to use the `--recursive` option when cloning this repo onto your Raspberry Pi:
+This project depends on our fork of the [flaschen-taschen](https://github.com/MILL-LX/flaschen-taschen.git) project. It is included as a submodule in the [dependencies](dependencies) folder of this project. As such, make sure to use the `--recursive` option when cloning this repo onto your Raspberry Pi:
 
 `git clone --recursive https://github.com/MILL-LX/rgb-emoji-chat.git`

@@ -20,10 +20,6 @@ sudo apt full-upgrade
 
 #### Install Tools and Dependencies
 
-Some packages may not be required but are specified in the [hzeller rpi-rgb-led-matrix library repo](https://github.com/hzeller/rpi-rgb-led-matrix) on which this project depends.
-
-<!-- TODO: verify the actual requirements of the LED Matrix Library, or maybe just poin to the requirements in the library's repo. -->
-
 ```bash
 sudo apt install \
     git \

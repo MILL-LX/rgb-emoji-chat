@@ -7,7 +7,7 @@ An LED sign that displays emoji based on a chat conversation
 
 Use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to create the OS image for your Pi.
 
-This project has been developed on a Raspberry Pi 4 running *Bullseye - light* with SSH enabled and a public key installed. Installing the oublic key will make your life easier if you like to use the VSCode Remote SSH plugin to develop directly on the Pi.
+This project has been developed on a Raspberry Pi 3 running *Bullseye - light* with SSH enabled and a public key installed. Installing the public key will make your life easier if you like to use the VSCode Remote SSH plugin to develop directly on the Pi.
 
 ### Tooling
 

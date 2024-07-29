@@ -4,7 +4,7 @@ This application can start up automatically on reboot of your Raspberry Pi. Use 
 
 ```bash
 cd /home/rpi/rgb-emoji-chat
-sudo runtime/systemd/ft-server.service /etc/systemd/system
+sudo cp runtime/systemd/ft-server.service /etc/systemd/system
 sudo systemctl daemon-reload
 sudo systemctl stop ft-server.service
 sudo systemctl start ft-server.service

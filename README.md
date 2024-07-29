@@ -22,9 +22,10 @@ sudo apt full-upgrade
 
 ```bash
 sudo apt install \
+    bash \
     git \
     python3 \
-    python3-pip \
+    python3-pip
 ```
 
 ## Cloning the repository
@@ -32,3 +33,14 @@ sudo apt install \
 This project depends on our fork of the [flaschen-taschen](https://github.com/MILL-LX/flaschen-taschen.git) project. It is included as a submodule in the [dependencies](dependencies) folder of this project. As such, make sure to use the `--recursive` option when cloning this repo onto your Raspberry Pi:
 
 `git clone --recursive https://github.com/MILL-LX/rgb-emoji-chat.git`
+
+## Building and running the flaschen-taschen server
+
+The flaschen-tashen server provides a network interface to the display that it manages. We need to build the version manages an RGB LED Matrix and copy the binary to where we keep the runtime files for this project: 
+
+```bash
+$ cd dependencies/flaschen-taschen/server
+$ make FT_BACKEND=rgb-matrix
+```
+
+There is a symbolic link from the [runtime/ft-server](runtime/ft-server) to the newly built server.

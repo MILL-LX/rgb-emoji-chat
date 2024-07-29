@@ -43,4 +43,4 @@ $ cd dependencies/flaschen-taschen/server
 $ make FT_BACKEND=rgb-matrix
 ```
 
-There is a symbolic link from the [runtime/ft-server](runtime/ft-server) to the newly built server.
+There is a symbolic link from `runtime/ft-server` to the newly built server. Instructions for installing the server as a systemd service are available in [runtime/systemd/README.md](runtime/systemd/README.md).

@@ -1,5 +1,4 @@
 import math
-import random
 import time
 
 import lib.flaschen as flaschen
@@ -9,7 +8,7 @@ UDP_PORT = 1337
 height = 64
 width = 64
 
-ft = flaschen.Flaschen(UDP_IP, UDP_PORT, width, height)
+ft = flaschen.Flaschen(UDP_IP, UDP_PORT, width, height, layer=0)
 
 def distance(x, y, width, height):
     return math.sqrt((width - x)**2 + (height - y)**2)
@@ -25,22 +24,16 @@ time.sleep(3)
 while True:
     for y in range(0, ft.height):
         for x in range(0, ft.width):
-            dist_color = int(distance(x, y, width, height) / far_corner_distance * 255)
-            r = dist_color
-            g = dist_color
-            b = dist_color
-            color = (r,g,b)
-            ft.set(x, y, (r,g,b))
+            scaled_dist = int(distance(x, y, width, height) / far_corner_distance * 255)
+            dist_color = (scaled_dist, scaled_dist, scaled_dist)
+            ft.set(x, y, dist_color)
     ft.send()
     time.sleep(3)
 
     for y in range(0, ft.height):
         for x in range(0, ft.width):
-            dist_color = 255 - int(distance(x, y, width, height) / far_corner_distance * 255)
-            r = dist_color
-            g = dist_color
-            b = dist_color
-            color = (r,g,b)
-            ft.set(x, y, (r,g,b))
+            scaled_dist = 255 - int(distance(x, y, width, height) / far_corner_distance * 255)
+            dist_color = (scaled_dist, scaled_dist, scaled_dist)
+            ft.set(x, y, dist_color)
     ft.send()
     time.sleep(3)

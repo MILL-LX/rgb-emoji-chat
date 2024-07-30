@@ -25,9 +25,16 @@ sudo apt install \
     bash \
     git \
     python3 \
-    python3-pip \
-    pipx
+    python3-pip
 ```
+
+The following looks scary beacuse of the `--break-system-packages` flag. This should be the only thing that we need to install this way as it will help up manage our project's virtual environment.
+
+```bash
+pip3 install --user pipenv --break-system-packages
+```
+
+Add `/home/rpi/.local/bin` to your `PATH` in your shell's startup script, e.g. `~/.bashrc`
 
 #### Configure Pi Hardware
 
@@ -39,7 +46,7 @@ To slightly improve display update, addn`isolcpus=3`at the end of `/boot/firmwar
 
 Reboot the Pi
 
-## Cloning the repository
+## Clone the repository
 
 This project depends on our fork of the [flaschen-taschen](https://github.com/MILL-LX/flaschen-taschen.git) project. It is included as a submodule in the [dependencies](dependencies) folder of this project. As such, make sure to use the `--recursive` option when cloning this repo onto your Raspberry Pi:
 

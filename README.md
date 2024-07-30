@@ -29,11 +29,15 @@ sudo apt install \
     pipx
 ```
 
-#### Turn off Pi Audio
+#### Configure Pi Hardware
 
 There is a conflict between the LED matrix library and the audio hardware on the Pi.
 
-Edit `/boot/firmware/config.txt` and set `dtparam=audio=off` then reboot the Pi.
+Edit `/boot/firmware/config.txt` and set `dtparam=audio=off`.
+
+To slightly improve display update, addn`isolcpus=3`at the end of `/boot/cmdline.txt`.
+
+Reboot the Pi
 
 ## Cloning the repository
 

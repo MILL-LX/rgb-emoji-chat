@@ -35,7 +35,7 @@ There is a conflict between the LED matrix library and the audio hardware on the
 
 Edit `/boot/firmware/config.txt` and set `dtparam=audio=off`.
 
-To slightly improve display update, addn`isolcpus=3`at the end of `/boot/cmdline.txt`.
+To slightly improve display update, addn`isolcpus=3`at the end of `/boot/firmware/cmdline.txt`.
 
 Reboot the Pi
 

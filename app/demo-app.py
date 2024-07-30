@@ -15,6 +15,13 @@ def distance(x, y, width, height):
     return math.sqrt((width - x)**2 + (height - y)**2)
 
 far_corner_distance = distance(0,0,width,height)
+
+for y in range(0, ft.height):
+    for x in range(0, ft.width):
+        ft.set(x, y, (0,0,0))
+ft.send()
+time.sleep(3)
+
 while True:
     for y in range(0, ft.height):
         for x in range(0, ft.width):

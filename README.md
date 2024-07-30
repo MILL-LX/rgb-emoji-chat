@@ -25,8 +25,15 @@ sudo apt install \
     bash \
     git \
     python3 \
-    python3-pip
+    python3-pip \
+    pipx
 ```
+
+#### Turn off Pi Audio
+
+There is a conflict between the LED matrix library and the audio hardware on the Pi.
+
+Edit `/boot/firmware/config.txt` and set `dtparam=audio=off` then reboot the Pi.
 
 ## Cloning the repository
 

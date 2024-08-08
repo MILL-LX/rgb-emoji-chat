@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>RGB Emoji Chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 45px Helvetica, Arial; }
@@ -25,7 +25,6 @@
       $(function () {
         var socket = io();
         $('form').submit(function(){
-          //socket.emit('chat message', $('#m').val());
           socket.send($('#m').val());
           $('#m').val('');
           return false;

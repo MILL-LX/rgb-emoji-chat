@@ -1,5 +1,16 @@
 from PIL import Image, ImageDraw, ImageFont
 
+def image_file_for_character(char: str):
+    hex_code = hex(ord(char)).lower().replace("0x", "")
+    return f'assets/64x64/{hex_code}.png'
+
+def lookup_char_image(char: str):
+    image_file = image_file_for_character(char)
+    image = Image.open(image_file)
+    image = image.convert('RGB')
+    
+    return image
+
 def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> Image.Image:
     # Image dimensions and border thickness
     img_size = image_size
@@ -11,7 +22,7 @@ def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> I
 
     # Load the font
     font_size = 60  # Adjust the font size
-    font = ImageFont.truetype(font_path, font_size) if font_path else ImageFont.load_default()
+    font = ImageFont.truetype(font_path, font_size) if font_path else ImageFont.load_default(font_size=font_size)
 
     # Calculate the position to center the character
     text_width = draw.textlength(char, font=font)

@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room, send
 from lib.display import Display
-from lib.image_util import create_char_image
+from lib.image_util import create_char_image, lookup_char_image
 
 display = Display()
 colors = [(255,0,0),(0,255,0),(0,0,255)]
@@ -18,10 +18,9 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-    # global color_index
-    # color_index = (color_index + 1) % len(colors)
-    # display.fill_display(colors[color_index])
-    image_for_character = create_char_image(msg[0])
+    first_char = msg[0]
+    # image_for_character = create_char_image(msg[0], font_path='assets/fonts/Noto_Emoji/static/NotoEmoji-Medium.ttf')
+    image_for_character = lookup_char_image(msg[0])
     display.send_image(image_for_character)
     send(msg, broadcast=True)
 
@@ -40,5 +39,7 @@ def on_leave(data):
     send(f'{username} has left the room.', to=room)
 
 if __name__ == '__main__':
+    display.clear_display()
+
     # Specify the IP address and port
     socketio.run(app, host='10.10.10.52', port=3000)

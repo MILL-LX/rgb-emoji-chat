@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room, send
 from lib.display import Display
-from lib.image_util import create_char_image, lookup_char_image
+from lib.image_util import lookup_char_image
 
 display = Display()
 colors = [(255,0,0),(0,255,0),(0,0,255)]
@@ -37,7 +37,8 @@ def on_leave(data):
     send(f'{username} has left the room.', to=room)
 
 if __name__ == '__main__':
-    display.clear_display()
+    image_for_character = lookup_char_image('🦊')
+    display.send_image(image_for_character)
 
     # Specify the IP address and port
     socketio.run(app, host='10.10.10.52', port=3000)

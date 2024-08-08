@@ -1,5 +1,10 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room, send
+from lib.display import Display
+
+display = Display()
+colors = [(255,0,0),(0,255,0),(0,0,255)]
+color_index = 0
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -7,10 +12,14 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
+    display.clear_display()
     return render_template('index.html')
 
 @socketio.on('message')
 def handle_message(msg):
+    global color_index
+    color_index = (color_index + 1) % len(colors)
+    display.fill_display(colors[color_index])
     send(msg, broadcast=True)
 
 @socketio.on('join')

@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-socketio = "*"
+pillow = "*"
+numpy = "*"
 
 [dev-packages]
 

@@ -18,8 +18,6 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-    first_char = msg[0]
-    # image_for_character = create_char_image(msg[0], font_path='assets/fonts/Noto_Emoji/static/NotoEmoji-Medium.ttf')
     image_for_character = lookup_char_image(msg[0])
     display.send_image(image_for_character)
     send(msg, broadcast=True)

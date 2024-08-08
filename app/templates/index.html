@@ -1,36 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <title>Chat Room</title>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 45px Helvetica, Arial; }
+      form { background: #000; padding: 10px; position: fixed; bottom: 0; width: 100%; }
+      form input { font-size: 45px; border: 0; padding: 20px; width: 75%; margin-right: .5%; }
+      form button { font-size: 45px; width: 20%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages { margin-bottom: 40px }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
     <script src="{{ url_for('static', filename='socket.io-4.7.5.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
-</head>
-<body>
-    <h1>Chat Room</h1>
-    <div id="chat">
-        <div id="messages"></div>
-        <input id="myMessage" autocomplete="off">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
     <script>
-        const socket = io();
-
-        socket.on('connect', () => {
-            const username = prompt("Enter your username:");
-            const room = 'default';
-            socket.emit('join', {username, room});
+      $(function () {
+        var socket = io();
+        $('form').submit(function(){
+          //socket.emit('chat message', $('#m').val());
+          socket.send($('#m').val());
+          $('#m').val('');
+          return false;
         });
-
         socket.on('message', (msg) => {
-            $('#messages').append($('<div>').text(msg));
+          $('#messages').append($('<li>').text(msg));
+          window.scrollTo(0, document.body.scrollHeight);
         });
-
-        function sendMessage() {
-            const msg = $('#myMessage').val();
-            socket.send(msg);
-            $('#myMessage').val('');
-        }
+      });
     </script>
-</body>
+  </body>
 </html>

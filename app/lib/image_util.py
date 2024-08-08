@@ -6,8 +6,12 @@ def image_file_for_character(char: str):
 
 def lookup_char_image(char: str):
     image_file = image_file_for_character(char)
-    image = Image.open(image_file)
-    image = image.convert('RGB')
+
+    try: 
+        image = Image.open(image_file)
+        image = image.convert('RGB')
+    except FileNotFoundError as e:
+        image = create_char_image(char, font_path='assets/fonts/MILL/Canada Type - Screener SC.ttf')
     
     return image
 

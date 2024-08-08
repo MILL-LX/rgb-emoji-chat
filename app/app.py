@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room, send
 from lib.display import Display
 from lib.image_util import lookup_char_image
+from lib.pi_util import is_raspberry_pi
 
 display = Display()
 colors = [(255,0,0),(0,255,0),(0,0,255)]
@@ -41,4 +42,5 @@ if __name__ == '__main__':
     display.send_image(image_for_character)
 
     # Specify the IP address and port
-    socketio.run(app, host='10.10.10.52', port=3000)
+    host = '10.10.10.52' if is_raspberry_pi() else 'localhost'
+    socketio.run(app, host=host, port=3000)

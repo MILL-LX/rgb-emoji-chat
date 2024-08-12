@@ -1,12 +1,16 @@
 [Unit]
 Description=Raspberry Pi RGB Matrix Emoji Chat
+Requires=ft-server.service
+After=ft-server.service
 
 [Service]
-User=root
-WorkingDirectory=/home/rpi/repos/pi-rgb-sign
-ExecStart=/bin/bash -c 'cd /home/rpi/rgb-emoji-chat && pipenv run python app/app.py'
-Restart=always
-RestartSec=10
+User=rpi
+WorkingDirectory=/home/rpi/rgb-emoji-chat
+ExecStart=/usr/bin/bash -c '/home/rpi/.local/bin/pipenv run python app/app.py'
+Restart=on-failure
+RestartSec=30s
+StartLimitBurst=3
+StartLimitIntervalSec=60
 
 [Install]
 WantedBy=multi-user.target

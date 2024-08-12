@@ -23,7 +23,7 @@
     <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
     <script>
       $(function () {
-        var socket = io();
+        var socket = io('/');
         $('form').submit(function(){
           socket.send($('#m').val());
           $('#m').val('');

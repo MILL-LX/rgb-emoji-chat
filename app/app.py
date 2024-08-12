@@ -43,4 +43,4 @@ if __name__ == '__main__':
 
     # Specify the IP address and port
     host = '10.10.10.52' if is_raspberry_pi() else 'localhost'
-    socketio.run(app, host=host, port=3000)
+    socketio.run(app, host=host, port=3000, allow_unsafe_werkzeug=True)

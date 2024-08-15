@@ -23,7 +23,7 @@ def handle_message(msg):
     send(msg, broadcast=True)
 
 if __name__ == '__main__':
-    display.send_image(lookup_char_image('👍🏿'))
+    display.send_image(lookup_char_image('🦊'))
 
     # Specify the IP address and port
     host = '10.10.10.52' if is_raspberry_pi() else 'localhost'

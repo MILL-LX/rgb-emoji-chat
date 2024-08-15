@@ -14,7 +14,6 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-    display.clear_display()
     return render_template('index.html')
 
 @socketio.on('message')
@@ -23,23 +22,8 @@ def handle_message(msg):
     display.send_image(image_for_character)
     send(msg, broadcast=True)
 
-@socketio.on('join')
-def on_join(data):
-    username = data['username']
-    room = data['room']
-    join_room(room)
-    send(f'{username} has entered the room.', to=room)
-
-@socketio.on('leave')
-def on_leave(data):
-    username = data['username']
-    room = data['room']
-    leave_room(room)
-    send(f'{username} has left the room.', to=room)
-
 if __name__ == '__main__':
-    image_for_character = lookup_char_image('🦊')
-    display.send_image(image_for_character)
+    display.send_image(lookup_char_image('🦊'))
 
     # Specify the IP address and port
     host = '10.10.10.52' if is_raspberry_pi() else 'localhost'

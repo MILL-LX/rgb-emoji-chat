@@ -1,7 +1,11 @@
 from PIL import Image, ImageDraw, ImageFont
 
-def image_file_for_character(char: str):
-    hex_code = hex(ord(char)).lower().replace("0x", "")
+def char_to_hex(character: str) -> str:
+    hex_codes = [hex(ord(c)).replace('0x', '') for c in character]
+    return '-'.join(hex_codes)
+
+def image_file_for_character(character: str) -> str:
+    hex_code = char_to_hex(character)
     return f'assets/64x64/{hex_code}.png'
 
 def lookup_char_image(char: str):

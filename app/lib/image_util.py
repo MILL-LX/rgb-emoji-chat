@@ -1,7 +1,10 @@
 import os
+import unicodedata
+
 
 from PIL import Image, ImageDraw, ImageFont
 
+from uniseg.graphemecluster import grapheme_clusters
 
 EMOJI_GLYPHS_PATH = 'assets/64x64'
 FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
@@ -26,8 +29,18 @@ def lookup_char_image(character: str):
     
     return image
 
+
+def get_grapheme_clusters(text):
+    # Use uniseg's grapheme_clusters function to split the text
+    return list(grapheme_clusters(text))
+
+
+def iterate_graphemes(msg):
+    for grapheme in get_grapheme_clusters(msg):
+        yield grapheme
+
 def emoji_images_for_message(msg):
-    return [image for c in msg if (image := lookup_char_image(c)) is not None]
+    return [image for g in iterate_graphemes(msg) if (image := lookup_char_image(g)) is not None]
 
 def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> Image.Image:
     # Image dimensions and border thickness

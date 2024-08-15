@@ -1,4 +1,10 @@
+import os
+
 from PIL import Image, ImageDraw, ImageFont
+
+
+EMOJI_GLYPHS_PATH = 'assets/64x64'
+FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
 def char_to_hex(character: str) -> str:
     hex_codes = [hex(ord(c)).replace('0x', '') for c in character]
@@ -6,18 +12,22 @@ def char_to_hex(character: str) -> str:
 
 def image_file_for_character(character: str) -> str:
     hex_code = char_to_hex(character)
-    return f'assets/64x64/{hex_code}.png'
+    return f'{EMOJI_GLYPHS_PATH}/{hex_code}.png'
 
-def lookup_char_image(char: str):
-    image_file = image_file_for_character(char)
+def lookup_char_image(character: str):
+    image_file = image_file_for_character(character)
 
     try: 
         image = Image.open(image_file)
         image = image.convert('RGB')
     except FileNotFoundError as e:
-        image = create_char_image(char, font_path='assets/fonts/MILL/Canada Type - Screener SC.ttf')
+        # image = create_char_image(characterchar)
+        image = None
     
     return image
+
+def emoji_images_for_message(msg):
+    return [image for c in msg if (image := lookup_char_image(c)) is not None]
 
 def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> Image.Image:
     # Image dimensions and border thickness
@@ -53,3 +63,22 @@ def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> I
     )
 
     return image
+
+
+##########################################################################################################################
+# The following is probable a premature optimization that would let us quickly check is a character had an emjoi glyph PNG
+##########################################################################################################################
+
+# def _map_basenames_to_paths(directory_path):
+#     basename_to_path = {}
+    
+#     for filename in os.listdir(directory_path):
+#         full_path = os.path.join(directory_path, filename)
+#         if os.path.isfile(full_path):
+#             basename = os.path.splitext(filename)[0]
+#             basename_to_path[basename] = full_path
+    
+#     return basename_to_path
+
+# def get_emoji_glyph_paths():
+#     return _map_basenames_to_paths(EMOJI_GLYPHS_PATH)

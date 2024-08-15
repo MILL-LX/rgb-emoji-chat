@@ -1,7 +1,9 @@
+import time
+
 from flask import Flask, render_template
-from flask_socketio import SocketIO, join_room, leave_room, send
+from flask_socketio import SocketIO, send
 from lib.display import Display
-from lib.image_util import lookup_char_image
+from lib.image_util import emoji_images_for_message
 from lib.pi_util import is_raspberry_pi
 
 display = Display()
@@ -18,12 +20,14 @@ def index():
 
 @socketio.on('message')
 def handle_message(msg):
-    image_for_character = lookup_char_image(msg[0])
-    display.send_image(image_for_character)
     send(msg, broadcast=True)
 
+    for image in emoji_images_for_message(msg):
+        display.send_image(image)
+        time.sleep(3)
+
 if __name__ == '__main__':
-    display.send_image(lookup_char_image('🦊'))
+    display.send_image(emoji_images_for_message('🦊')[0])
 
     # Specify the IP address and port
     host = '10.10.10.52' if is_raspberry_pi() else 'localhost'

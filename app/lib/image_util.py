@@ -12,14 +12,14 @@ def image_file_for_grapheme(grapheme: str) -> str:
     hex_code = grapheme_to_hex(grapheme)
     return f'{EMOJI_GLYPHS_PATH}/{hex_code}.png'
 
-def lookup_char_image(grapheme: str, emoji_onlY):
+def lookup_char_image(grapheme: str):
     image_file = image_file_for_grapheme(grapheme)
 
     try: 
         image = Image.open(image_file)
         image = image.convert('RGB')
     except FileNotFoundError as e:
-        return None if emoji_onlY else create_char_image(grapheme)
+        return None if grapheme == ' ' else create_char_image(grapheme)
     
     return image
 
@@ -28,7 +28,7 @@ def iterate_graphemes(msg):
         yield grapheme
 
 def images_for_message(msg, emoji_only=False):
-    return [image for g in iterate_graphemes(msg) if (image := lookup_char_image(g, emoji_only)) is not None]
+    return [lookup_char_image(g) for g in iterate_graphemes(msg)]
 
 def create_char_image(char: str, image_size=(64,64), font_path: str = FONT_PATH) -> Image.Image:
     # Image dimensions and border thickness

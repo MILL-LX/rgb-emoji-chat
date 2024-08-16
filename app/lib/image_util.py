@@ -30,7 +30,7 @@ def iterate_graphemes(msg):
 def images_for_message(msg, emoji_only=False):
     return [image for g in iterate_graphemes(msg) if (image := lookup_char_image(g, emoji_only)) is not None]
 
-def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> Image.Image:
+def create_char_image(char: str, image_size=(64,64), font_path: str = FONT_PATH) -> Image.Image:
     # Image dimensions and border thickness
     img_size = image_size
     border_thickness = 2

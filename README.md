@@ -52,13 +52,21 @@ This project depends on our fork of the [flaschen-taschen](https://github.com/MI
 
 `git clone --recursive https://github.com/MILL-LX/rgb-emoji-chat.git`
 
-## Building and running the flaschen-taschen server
+## Install the Python Application Dependencies
+
+In the project directory:
+
+```bash
+pipenv install
+```
+
+## Build and run the flaschen-taschen server
 
 The flaschen-tashen server provides a network interface to the display that it manages. We need to build the version manages an RGB LED Matrix and copy the binary to where we keep the runtime files for this project: 
 
 ```bash
-$ cd dependencies/flaschen-taschen/server
-$ make FT_BACKEND=rgb-matrix
+cd dependencies/flaschen-taschen/server
+make FT_BACKEND=rgb-matrix
 ```
 
 There is a symbolic link from `runtime/ft-server` to the newly built server. Instructions for installing the server as a systemd service are available in [runtime/systemd/README.md](runtime/systemd/README.md).

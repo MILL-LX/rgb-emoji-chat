@@ -23,7 +23,7 @@ def handle_message(msg):
     send(msg, broadcast=True)
 
     msg += '🦊'
-    msg = msg.replace(' ', '_').upper()
+    msg = msg.replace(' ', '-').upper()
     for image in images_for_message(msg, emoji_only=False):
         display.clear_display()
         time.sleep(0.5)

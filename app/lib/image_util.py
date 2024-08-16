@@ -1,42 +1,31 @@
-import os
-import unicodedata
-
-
 from PIL import Image, ImageDraw, ImageFont
-
 from uniseg.graphemecluster import grapheme_clusters
 
 EMOJI_GLYPHS_PATH = 'assets/64x64'
 FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
-def char_to_hex(character: str) -> str:
-    hex_codes = [hex(ord(c)).replace('0x', '') for c in character]
+def grapheme_to_hex(grapheme: str) -> str:
+    hex_codes = [hex(ord(c)).replace('0x', '') for c in grapheme]
     return '-'.join(hex_codes)
 
-def image_file_for_character(character: str) -> str:
-    hex_code = char_to_hex(character)
+def image_file_for_grapheme(grapheme: str) -> str:
+    hex_code = grapheme_to_hex(grapheme)
     return f'{EMOJI_GLYPHS_PATH}/{hex_code}.png'
 
-def lookup_char_image(character: str):
-    image_file = image_file_for_character(character)
+def lookup_char_image(grapheme: str):
+    image_file = image_file_for_grapheme(grapheme)
 
     try: 
         image = Image.open(image_file)
         image = image.convert('RGB')
     except FileNotFoundError as e:
-        # image = create_char_image(characterchar)
+        # image = create_char_image(graphemechar)
         image = None
     
     return image
 
-
-def get_grapheme_clusters(text):
-    # Use uniseg's grapheme_clusters function to split the text
-    return list(grapheme_clusters(text))
-
-
 def iterate_graphemes(msg):
-    for grapheme in get_grapheme_clusters(msg):
+    for grapheme in list(grapheme_clusters(msg)):
         yield grapheme
 
 def emoji_images_for_message(msg):
@@ -79,7 +68,7 @@ def create_char_image(char: str, image_size=(64,64), font_path: str = None) -> I
 
 
 ##########################################################################################################################
-# The following is probable a premature optimization that would let us quickly check is a character had an emjoi glyph PNG
+# The following is probable a premature optimization that would let us quickly check if a grapheme had an emjoi glyph PNG
 ##########################################################################################################################
 
 # def _map_basenames_to_paths(directory_path):

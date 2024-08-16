@@ -22,7 +22,6 @@ def index():
 def handle_message(msg):
     send(msg, broadcast=True)
 
-    # msg += ' 🦊'
     msg = msg.upper()
     for image in images_for_message(msg):
         display.clear_display()

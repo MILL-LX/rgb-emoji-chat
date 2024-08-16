@@ -24,10 +24,12 @@ def handle_message(msg):
 
     msg += ' 🦊'
     msg = msg.replace(' ', ' ').upper()
+    images = images_for_message(msg, emoji_only=False)
     for image in images_for_message(msg, emoji_only=False):
         display.clear_display()
-        time.sleep(0.25)
+        time.sleep(0.1)
         display.send_image(image)
+        char_delay = 0.1 if msg[i] == ' ' else 0.25
         time.sleep(0.25)
 
 if __name__ == '__main__':

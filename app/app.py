@@ -24,7 +24,9 @@ def handle_message(msg):
 
     for image in images_for_message(msg, emoji_only=False):
         display.send_image(image)
-        time.sleep(3)
+        time.sleep(2)
+
+    display.send_image(images_for_message('🦊')[0])
 
 if __name__ == '__main__':
     display.send_image(images_for_message('🦊')[0])

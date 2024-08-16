@@ -2,6 +2,7 @@ import time
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
+
 from lib.display import Display
 from lib.image_util import images_for_message
 from lib.pi_util import is_raspberry_pi
@@ -11,7 +12,6 @@ colors = [(255,0,0),(0,255,0),(0,0,255)]
 color_index = 0
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
 socketio = SocketIO(app)
 
 @app.route('/')

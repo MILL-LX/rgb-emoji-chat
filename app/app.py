@@ -22,7 +22,7 @@ def index():
 def handle_message(msg):
     send(msg, broadcast=True)
 
-    msg += ' 🦊'
+    # msg += ' 🦊'
     msg = msg.upper()
     for image in images_for_message(msg):
         display.clear_display()
@@ -30,9 +30,9 @@ def handle_message(msg):
 
         if image:
             display.send_image(image)
-            time.sleep(0.25)
+            time.sleep(0.5)
         else:
-            time.sleep(0.1)
+            time.sleep(0.25)
 
 if __name__ == '__main__':
     display.send_image(images_for_message('🦊')[0])

@@ -22,13 +22,13 @@ def index():
 def handle_message(msg):
     send(msg, broadcast=True)
 
-    msg += '🦊'
-    msg = msg.replace(' ', '-').upper()
+    msg += ' 🦊'
+    msg = msg.replace(' ', ' ').upper()
     for image in images_for_message(msg, emoji_only=False):
         display.clear_display()
-        time.sleep(0.5)
+        time.sleep(0.25)
         display.send_image(image)
-        time.sleep(2)
+        time.sleep(0.25)
 
 if __name__ == '__main__':
     display.send_image(images_for_message('🦊')[0])

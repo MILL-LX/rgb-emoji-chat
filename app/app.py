@@ -1,3 +1,4 @@
+import requests
 import time
 
 from flask import Flask, render_template
@@ -18,9 +19,17 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html')
 
+def send_to_rgb_sign(msg: str) -> requests.Response:
+    sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'
+    sign_url = f'http://{sign_host}/animate/ShowMessage'
+    params = {'message': msg}
+    response = requests.get(sign_url, params=params)
+    return response
+
 @socketio.on('message')
 def handle_message(msg):
     send(msg, broadcast=True)
+    send_to_rgb_sign(msg)
 
     msg = msg.upper()
     for image in images_for_message(msg):

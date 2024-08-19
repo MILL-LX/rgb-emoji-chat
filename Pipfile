@@ -9,6 +9,7 @@ flask-socketio = "*"
 pillow = "*"
 numpy = "*"
 uniseg = "*"
+requests = "*"
 
 [dev-packages]
 

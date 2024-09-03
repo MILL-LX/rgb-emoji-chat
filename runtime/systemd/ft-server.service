@@ -4,7 +4,7 @@ Description=Flaschen Taschen LED Matrix Display Server
 [Service]
 User=root
 WorkingDirectory=/home/rpi/rgb-emoji-chat/runtime
-ExecStart=/bin/bash -c 'cd /home/rpi/rgb-emoji-chat/runtime && ./ft-server --led-rows=32 --led-cols=64 --led-chain=2 --led-pixel-mapper="U-mapper" --led-gpio-mapping=adafruit-hat --led-slowdown-gpio=2 --led-brightness=100'
+ExecStart=/bin/bash -c 'cd /home/rpi/rgb-emoji-chat/runtime && ./ft-server --led-rows=32 --led-cols=64 --led-chain=2 --led-pixel-mapper="U-mapper" --led-gpio-mapping=adafruit-hat --led-slowdown-gpio=3 --led-brightness=100 --led-no-hardware-pulse --led-limit-refresh=120'
 Restart=always
 RestartSec=10
 

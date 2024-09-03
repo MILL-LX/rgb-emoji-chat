@@ -5,7 +5,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 
 from lib.display import Display
-from lib.image_util import images_for_message
+from lib.image_util import images_for_message, image_for_code
 from lib.pi_util import is_raspberry_pi
 
 display = Display()
@@ -19,6 +19,12 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html')
 
+@app.route('/ShowImage/<image_code>')
+def show_image(image_code):
+    image = image_for_code(image_code)
+    if image:
+        display.send_image(image)
+    return '', 200
 def send_to_rgb_sign(msg: str) -> requests.Response:
     sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'
     sign_url = f'http://{sign_host}/animate/ShowMessage'

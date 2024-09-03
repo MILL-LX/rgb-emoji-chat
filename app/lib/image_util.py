@@ -1,36 +1,45 @@
 from PIL import Image, ImageDraw, ImageFont
 from uniseg.graphemecluster import grapheme_clusters
 
-EMOJI_GLYPHS_PATH = 'assets/64x64'
-FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
+_EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/64x64'
+_FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
-def grapheme_to_hex(grapheme: str) -> str:
-    hex_codes = [hex(ord(c)).replace('0x', '') for c in grapheme]
-    return '-'.join(hex_codes)
+_IMAGE_DIRECTORY_PATH = 'assets/images'
 
-def image_file_for_grapheme(grapheme: str) -> str:
-    hex_code = grapheme_to_hex(grapheme)
-    return f'{EMOJI_GLYPHS_PATH}/{hex_code}.png'
 
-def lookup_char_image(grapheme: str):
-    image_file = image_file_for_grapheme(grapheme)
+def images_for_message(msg, emoji_only=False):
+    return [image_for_grapheme(g) for g in _iterate_graphemes(msg)]
 
-    try: 
+def image_for_code(image_directory: str, image_code: str) -> Image.Image:
+    try:
+        image_file = _image_path_for_image_code(image_directory, image_code)
         image = Image.open(image_file)
         image = image.convert('RGB')
     except FileNotFoundError as e:
-        return None if grapheme == ' ' else create_char_image(grapheme)
-    
+        image = None
     return image
 
-def iterate_graphemes(msg):
+def _image_path_for_image_code(image_directory: str, image_code: str) -> str:
+    return f'{image_directory}/{image_code}.png'
+
+def _grapheme_to_hex(grapheme: str) -> str:
+    hex_codes = [hex(ord(c)).replace('0x', '') for c in grapheme]
+    return '-'.join(hex_codes)
+
+def _emoji_image_for_grapheme(grapheme: str) -> Image.Image:
+    hex_code = _grapheme_to_hex(grapheme)
+    return image_for_code(_EMOJI_GLYPHS_DIRECTORY_PATH, hex_code)
+
+def image_for_grapheme(grapheme: str):
+    emoji_image = _emoji_image_for_grapheme(grapheme)
+    image = emoji_image if emoji_image else _create_char_image(grapheme)
+    return image
+
+def _iterate_graphemes(msg):
     for grapheme in list(grapheme_clusters(msg)):
         yield grapheme
 
-def images_for_message(msg, emoji_only=False):
-    return [lookup_char_image(g) for g in iterate_graphemes(msg)]
-
-def create_char_image(char: str, image_size=(64,64), font_path: str = FONT_PATH) -> Image.Image:
+def _create_char_image(char: str, image_size=(64,64), font_path: str = _FONT_PATH) -> Image.Image:
     # Image dimensions and border thickness
     img_size = image_size
     border_thickness = 2

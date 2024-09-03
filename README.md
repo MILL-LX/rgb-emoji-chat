@@ -62,11 +62,20 @@ pipenv install
 
 ## Build and run the flaschen-taschen server
 
-The flaschen-tashen server provides a network interface to the display that it manages. We need to build the version manages an RGB LED Matrix and copy the binary to where we keep the runtime files for this project: 
-
+The flaschen-tashen server provides a network interface to the display that it manages. 
 ```bash
 cd dependencies/flaschen-taschen/server
+```
+
+On the Pi, we need to build the version of the server that manages an RGB LED Matrix: 
+```bash
 make FT_BACKEND=rgb-matrix
 ```
+
+On the development machine, we need to build the version of the server that runs in the terminal: 
+
+```bash
+make FT_BACKEND=terminal
+``` 
 
 There is a symbolic link from `runtime/ft-server` to the newly built server. Instructions for installing the server as a systemd service are available in [runtime/systemd/README.md](runtime/systemd/README.md).

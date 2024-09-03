@@ -23,8 +23,12 @@ def send_to_rgb_sign(msg: str) -> requests.Response:
     sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'
     sign_url = f'http://{sign_host}/animate/ShowMessage'
     params = {'message': msg}
-    response = requests.get(sign_url, params=params)
-    return response
+    try:
+        response = requests.get(sign_url, params=params)
+        return response
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending message to RGB sign: {e}")
+        return None
 
 @socketio.on('message')
 def handle_message(msg):
@@ -46,5 +50,5 @@ if __name__ == '__main__':
     display.send_image(images_for_message('🦊')[0])
 
     # Specify the IP address and port
-    host = '10.10.10.52' if is_raspberry_pi() else 'localhost'
+    host = '0.0.0.0' if is_raspberry_pi() else 'localhost'
     socketio.run(app, host=host, port=3000, allow_unsafe_werkzeug=True)

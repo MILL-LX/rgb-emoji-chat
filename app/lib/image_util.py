@@ -4,13 +4,16 @@ from uniseg.graphemecluster import grapheme_clusters
 _EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/64x64'
 _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
-_IMAGE_DIRECTORY_PATH = 'assets/images'
+IMAGE_DIRECTORY_PATH = 'assets/images'
 
 
 def images_for_message(msg, emoji_only=False):
     return [image_for_grapheme(g) for g in _iterate_graphemes(msg)]
 
-def image_for_code(image_directory: str, image_code: str) -> Image.Image:
+def image_for_code(image_code: str) -> Image.Image:
+    return _load_image_for_code(IMAGE_DIRECTORY_PATH, image_code)
+
+def _load_image_for_code(image_directory: str, image_code: str) -> Image.Image:
     try:
         image_file = _image_path_for_image_code(image_directory, image_code)
         image = Image.open(image_file)
@@ -28,7 +31,7 @@ def _grapheme_to_hex(grapheme: str) -> str:
 
 def _emoji_image_for_grapheme(grapheme: str) -> Image.Image:
     hex_code = _grapheme_to_hex(grapheme)
-    return image_for_code(_EMOJI_GLYPHS_DIRECTORY_PATH, hex_code)
+    return _load_image_for_code(_EMOJI_GLYPHS_DIRECTORY_PATH, hex_code)
 
 def image_for_grapheme(grapheme: str):
     emoji_image = _emoji_image_for_grapheme(grapheme)

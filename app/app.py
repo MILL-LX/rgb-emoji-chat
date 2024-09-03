@@ -1,7 +1,7 @@
 import requests
 import time
 
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO, send
 
 from lib.display import Display
@@ -24,7 +24,10 @@ def show_image(image_code):
     image = image_for_code(image_code)
     if image:
         display.send_image(image)
-    return '', 200
+
+    # Always return success to avoid sniffing for errors
+    return jsonify({'status': 'success', 'message': f'Displaying image for code {image_code}'})
+
 def send_to_rgb_sign(msg: str) -> requests.Response:
     sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'
     sign_url = f'http://{sign_host}/animate/ShowMessage'

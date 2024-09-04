@@ -1,7 +1,7 @@
 import requests
 import time
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, send
 
 from lib.display import Display
@@ -17,11 +17,12 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', methods=['GET'])
 
-@app.route('/ShowImage/<image_code>')
-def show_image(image_code):
-    image = image_for_code(image_code)
+@app.route('/ShowImage', methods=['GET'])
+def show_image():
+    image_code = request.args.get('image_code')
+    image = image_for_code(image_code, display.size())
     if image:
         display.send_image(image)
 
@@ -45,7 +46,7 @@ def handle_message(msg):
     send_to_rgb_sign(msg)
 
     msg = msg.upper()
-    for image in images_for_message(msg):
+    for image in images_for_message(msg, display.size()):
         display.clear_display()
         time.sleep(0.1)
 
@@ -56,7 +57,7 @@ def handle_message(msg):
             time.sleep(0.25)
 
 if __name__ == '__main__':
-    display.send_image(images_for_message('🦊')[0])
+    display.send_image(images_for_message('🦊', display.size())[0])
 
     # Specify the IP address and port
     host = '0.0.0.0' if is_raspberry_pi() else 'localhost'

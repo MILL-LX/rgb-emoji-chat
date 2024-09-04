@@ -4,20 +4,22 @@ from uniseg.graphemecluster import grapheme_clusters
 _EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/emoji-glyphs/64x64'
 _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
-IMAGE_DIRECTORY_PATH = 'assets/images'
+IMAGE_DIRECTORY_PATH = 'assets/simon/emojyFrame'
 
 
-def images_for_message(msg, emoji_only=False):
-    return [image_for_grapheme(g) for g in _iterate_graphemes(msg)]
+def images_for_message(msg, image_size, emoji_only=False):
+    return [image_for_grapheme(g, image_size) for g in _iterate_graphemes(msg)]
 
-def image_for_code(image_code: str) -> Image.Image:
-    return _load_image_for_code(IMAGE_DIRECTORY_PATH, image_code)
+def image_for_code(image_code: str, image_size) -> Image.Image:
+    return _load_image_for_code(IMAGE_DIRECTORY_PATH, image_code, image_size)
 
-def _load_image_for_code(image_directory: str, image_code: str) -> Image.Image:
+def _load_image_for_code(image_directory: str, image_code: str, image_size) -> Image.Image:
     try:
         image_file = _image_path_for_image_code(image_directory, image_code)
         image = Image.open(image_file)
         image = image.convert('RGB')
+        if image_size != image.size:
+            image.thumbnail(image_size)
     except FileNotFoundError as e:
         image = None
     return image
@@ -29,20 +31,20 @@ def _grapheme_to_hex(grapheme: str) -> str:
     hex_codes = [hex(ord(c)).replace('0x', '') for c in grapheme]
     return '-'.join(hex_codes)
 
-def _emoji_image_for_grapheme(grapheme: str) -> Image.Image:
+def _emoji_image_for_grapheme(grapheme: str, image_size) -> Image.Image:
     hex_code = _grapheme_to_hex(grapheme)
-    return _load_image_for_code(_EMOJI_GLYPHS_DIRECTORY_PATH, hex_code)
+    return _load_image_for_code(_EMOJI_GLYPHS_DIRECTORY_PATH, hex_code, image_size)
 
-def image_for_grapheme(grapheme: str):
-    emoji_image = _emoji_image_for_grapheme(grapheme)
-    image = emoji_image if emoji_image else _create_char_image(grapheme)
+def image_for_grapheme(grapheme: str, image_size):
+    emoji_image = _emoji_image_for_grapheme(grapheme, image_size)
+    image = emoji_image if emoji_image else _create_char_image(grapheme, image_size)
     return image
 
 def _iterate_graphemes(msg):
     for grapheme in list(grapheme_clusters(msg)):
         yield grapheme
 
-def _create_char_image(char: str, image_size=(64,64), font_path: str = _FONT_PATH) -> Image.Image:
+def _create_char_image(char: str, image_size, font_path: str = _FONT_PATH) -> Image.Image:
     # Image dimensions and border thickness
     img_size = image_size
     border_thickness = 2

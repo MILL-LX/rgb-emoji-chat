@@ -11,11 +11,17 @@ _ft_default_default_layer = 0
 
 class Display:
 
-    def __init__(self, ft: Flaschen=None) -> None:
+    def __init__(self, ft: Flaschen=None, width=_ft_default_width, height=_ft_default_height) -> None:
         if ft is None:
-            self._ft = Flaschen(_ft_default_UDP_IP, _ft_default_UDP_PORT, _ft_default_width, _ft_default_height, layer=_ft_default_default_layer)
+            self.width = width
+            self.height = height
+
+            self._ft = Flaschen(_ft_default_UDP_IP, _ft_default_UDP_PORT, width, height, layer=_ft_default_default_layer)
         else:
             self._ft = ft
+
+    def size(self):
+        return (self.width, self.height)
 
     def clear_display(self):
         self.fill_display((0,0,0))

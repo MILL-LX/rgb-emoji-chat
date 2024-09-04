@@ -20,6 +20,11 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html', methods=['GET'])
 
+# Load the UI for picking the image to display
+@app.route('/ImageSelector')
+def serve_image_selecctor_ui():
+    return render_template('image_selector.html', methods=['GET'])
+
 # Example request: http://peepp-0000.local:3000/AvailableImageCodes
 @app.route('/AvailableImageCodes', methods=['GET'])
 def avalable_image_codes():

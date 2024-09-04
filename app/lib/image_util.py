@@ -18,6 +18,8 @@ def image_for_code(image_code: str, image_size) -> Image.Image:
     return _load_image_for_code(IMAGE_DIRECTORY_PATH, image_code, image_size)
 
 def available_image_codes():
+    excluded_filenames = ['.DS_Store']
+    
     image_codes = []
 
     for root, dirs, files in os.walk(IMAGE_DIRECTORY_PATH):
@@ -25,6 +27,8 @@ def available_image_codes():
             relative_path = os.path.relpath(os.path.join(root, file), IMAGE_DIRECTORY_PATH)
             file_path_without_extension = os.path.splitext(relative_path)[0]
             dirname, basename = os.path.split(file_path_without_extension)
+            if basename.startswith('.') or basename in excluded_filenames:
+                continue
             image_codes.append({
                 'full_code': file_path_without_extension,
                 'collection': dirname,

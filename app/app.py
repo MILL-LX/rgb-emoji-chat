@@ -4,6 +4,7 @@ import time
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, send
 
+import lib
 from lib.display import Display
 from lib.image_util import images_for_message, image_for_code
 from lib.pi_util import is_raspberry_pi
@@ -19,6 +20,13 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html', methods=['GET'])
 
+# Example request: http://peepp-0000.local:3000/AvailableImageCodes
+@app.route('/AvailableImageCodes', methods=['GET'])
+def avalable_image_codes():
+    return jsonify(lib.image_util.available_image_codes())
+
+
+# Example request: http://peepp-0000.local:3000/ShowImage?image_code=MH%20G%20Collection%20PART/8
 @app.route('/ShowImage', methods=['GET'])
 def show_image():
     image_code = request.args.get('image_code')

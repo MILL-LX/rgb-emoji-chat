@@ -291,6 +291,3 @@ cython_debug/
 #.idea/
 
 nohup.out
-
-# ignore images
-assets/

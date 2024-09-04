@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from uniseg.graphemecluster import grapheme_clusters
 
-_EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/64x64'
+_EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/emoji-glyphs/64x64'
 _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
 IMAGE_DIRECTORY_PATH = 'assets/images'

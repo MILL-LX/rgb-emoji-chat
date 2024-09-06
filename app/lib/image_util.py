@@ -43,7 +43,7 @@ def _load_image_for_code(image_directory: str, image_code: str, image_size) -> I
         image = Image.open(image_file)
         image = image.convert('RGB')
         if image_size != image.size:
-            image.thumbnail(image_size)
+            image = image.resize(image_size, Image.LANCZOS)
     except FileNotFoundError as e:
         image = None
     return image

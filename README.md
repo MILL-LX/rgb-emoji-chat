@@ -80,4 +80,3 @@ make FT_BACKEND=terminal
 
 There is a symbolic link from `runtime/ft-server` to the newly built server. Instructions for installing the server as a systemd service are available in [runtime/systemd/README.md](runtime/systemd/README.md).
 
-hello :-)

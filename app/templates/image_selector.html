@@ -2,17 +2,78 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Image Selector</title>
     <style>
         :root {
-            --cor_letras: #2a8a00;
+            --cor_letras: #000;
+            --degrade_1: #130e16;
+            --degrade_2: #292643;
+            --vermelho: #ff0000;
         }
 
+        html,
         body {
             margin: 0;
             padding: 0;
-            background-color: #000;
+            background: rgb(2, 0, 36);
+            background: linear-gradient(172deg, rgba(2, 0, 36, 1) 0%, rgba(19, 14, 22, 1) 35%, rgba(41, 38, 67, 1) 100%);
             font-family: monospace;
+            font-smooth: never !important;
+        }
+
+
+
+        .brand {
+            width: 80%;
+            border: 0px dotted orange;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            margin: 1em auto;
+        }
+
+        .brand img {
+            max-width: 100%;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .logo_mhi_head {
+            max-height: 50px;
+            padding-bottom: 25px;
+        }
+
+
+        .frame {
+            position: relative;
+            width: 80%;
+            border: 0px dotted green;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .frame img {
+            max-width: 100%;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .image_projection {
+            position: absolute;
+            border: 0px dotted yellow;
+            width: 28.8%;
+            height: 25.1%;
+            display: block;
+            top: 30%;
+            left: 36%;
+            content: '';
+            background-image: url('../static/frame/mhi_logo.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
         }
 
         .list_collections li {
@@ -20,13 +81,32 @@
         }
 
         #number_input {
-            color: var(--cor_letras);
+            color: var(--vermelho);
             font-size: 10vw;
+            background-color: #00000080;
+            border: none;
+            text-align: center;
+            max-width: 95%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 0px solid var(--vermelho);
+            margin-bottom: 5px;
+            caret-shape: block;
+            caret-color: var(--vermelho);
         }
 
-        #number_input {
-            background-color: transparent;
-            border: none;
+        #button_go {
+            width: 100%;
+            height: 5vh;
+            display: none;
+            text-align: center;
+        }
+
+        .text {
+            color: var(--cor_letras);
+            font-size: 5vw;
             text-align: center;
         }
 
@@ -37,18 +117,26 @@
         }
 
         .keypad>div {
-            width: 30%;
-            border: 1px solid var(--cor_letras);
+            width: 14%;
+            background: var(--vermelho);
             display: flex;
-            min-height: 20vh;
+            min-height: 10vh;
             justify-content: space-evenly;
             align-items: center;
+            margin: 1%;
+        }
+
+        .keypad>div:active,
+        .keypad>div:hover {
+            background-color: #fff;
+            color: #000;
         }
 
         .keypad>div a {
             color: var(--cor_letras);
             text-decoration: none;
             font-size: 10vw;
+            font-weight: bolder;
         }
     </style>
     <script src="{{ url_for('static', filename='socket.io-4.7.5.min.js') }}"></script>
@@ -57,38 +145,41 @@
 
 <body>
     <div id="root">
-        <div id="choose_collection">
-            <ul class="list_collections">
-                <li>MH G Collection PART</li>
-                <li>Collection 2</li>
-                <li>Collection 3</li>
-                <li>Collection 4</li>
-            </ul>
+        <div class="brand">
+            <img class="logo_mhi_head" src="{{ url_for('static', filename='/frame/mhi_logo.svg') }}" alt="MHI logo">
+            <img src="{{ url_for('static', filename='/frame/exhibit_letras.png') }}" alt="Showcase your MHI">
         </div>
-        <div id="input_number">
-            <input id="number_input" type="p" pattern="[0-9][0-9][0-9][0-9]" inputmode="numeric"
-                class="number use-keyboard-input"></input>
-            <input id="button_go" type="submit" value="GO">
+        <div class="frame">
+            <img src="{{ url_for('static', filename='/frame/frame_background.png') }}" alt="Frame Background Image">
+            <div class="image_projection"></div>
         </div>
-        <div class="keypad">
-            <div class="key"><a href="#">1</a></div>
-            <div class="key"><a href="#">2</a></div>
-            <div class="key"><a href="#">3</a></div>
-            <div class="key"><a href="#">4</a></div>
-            <div class="key"><a href="#">5</a></div>
-            <div class="key"><a href="#">6</a></div>
-            <div class="key"><a href="#">7</a></div>
-            <div class="key"><a href="#">8</a></div>
-            <div class="key"><a href="#">9</a></div>
-            <div class="key esc"><a href="#">ESC</a></div>
-            <div class="key"><a href="#">0</a></div>
-            <div class="key delete"><a href="#">&lbarr;</a></div>
+        <div id="choose_image">
+
+            <div id="number_input_div">
+                <input readonly id="number_input" type="p" pattern="[0-9][0-9][0-9][0-9]" inputmode="numeric"
+                    class="number use-keyboard-input"></input>
+                <input id="button_go" type="submit" value="GO">
+            </div>
+            <div class="keypad">
+                <div class="key number_key"><a href="#">1</a></div>
+                <div class="key number_key"><a href="#">2</a></div>
+                <div class="key number_key"><a href="#">3</a></div>
+                <div class="key number_key"><a href="#">4</a></div>
+                <div class="key number_key"><a href="#">5</a></div>
+                <div class="key number_key"><a href="#">6</a></div>
+                <div class="key number_key"><a href="#">7</a></div>
+                <div class="key number_key"><a href="#">8</a></div>
+                <div class="key number_key"><a href="#">9</a></div>
+                <div class="key number_key"><a href="#">0</a></div>
+                <div class="key delete"><a href="#">&lbarr;</a></div>
+                <div class="key go"><a href="#">GO</a></div>
+            </div>
         </div>
     </div>
     <script>
 
 
-console.log($this);
+        console.log($(this));
 
         // our url for getting all the available images and collections:
         let url_all_data = "http://peepp-0000.local:3000/AvailableImageCodes";
@@ -107,20 +198,25 @@ console.log($this);
             referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             // body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
-            .then(response => console.log("response: " + response))
-            .catch(error => console.log("Error: " + error))
+            .then(response => console.log("response: ", response))
+            .catch(error => console.log("Error: ", error))
 
         console.log("all_data: " + all_data)
+
+        function vai_buscar() {
+
+        }
 
         // this is our code:
         let button = document.getElementById("button_go");
         let number_input = document.getElementById("number_input");
-        let collection = "MHI Collection PART";
+        let collection = "scaled_images";
         button.addEventListener("click", function (e) {
             console.log('click!');
-            // console.log(number_input.value);
+            let nivalue = number_input.value;
+            console.log("nivalue - ", nivalue);
             let url = "http://peepp-0000.local:3000/ShowImage?image_code=";
-            url = url + '' + collection + '/' + number_input.value;
+            url = url + '' + collection + '/' + nivalue;
             console.log(url);
 
             fetch(url, {
@@ -136,10 +232,41 @@ console.log($this);
                 referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 // body: JSON.stringify(data) // body data type must match "Content-Type" header
             })
-                .then(response => console.log("response: " + response))
-                .catch(error => console.log("Error: " + error))
+                // .then(response => console.log("response: " + response))
+                .then($('#number_input').val(''))
+                .catch(error => console.log("Error: " + error));
 
+                // we're just getting them from google storage, because they're there, but we can also serve them locally, as we're doing with the other assets...
+            let image_to_show = 'https://storage.googleapis.com/mhi-ordinals-assets/mhi/';
+            image_to_show = image_to_show + '' + nivalue + '.png';
+            console.log("image_to_show - ", image_to_show);
+            $('.image_projection').css('background-image', 'url(' + image_to_show + ')');
+            
         }, false);
+
+        $(document).on('click', '.number_key', function () {
+            let este_numero = $(this).text();
+            // console.log("este_numero: " + este_numero);
+            let numero_ate_agora = $('#number_input').val();
+            // console.log("numero_ate_agora: " + numero_ate_agora);
+            let numero_final = numero_ate_agora + este_numero;
+            // console.log("numero_final: " + numero_final);
+            $('#number_input').val(numero_final);
+        });
+
+        $(document).on('click', '.delete', function () {
+            let numero_ate_agora = $('#number_input').val();
+            // console.log("numero_ate_agora: " + numero_ate_agora);
+            let numero_final = numero_ate_agora.substring(0, numero_ate_agora.length - 1);
+            // console.log("numero_final: " + numero_final);
+            $('#number_input').val(numero_final);
+        });
+
+        $(document).on('click', '.go a', function (e) {
+            e.preventDefault();
+            $('#button_go').click();
+        });
+
 
 
     </script>

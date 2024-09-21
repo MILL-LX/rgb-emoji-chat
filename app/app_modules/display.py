@@ -1,4 +1,4 @@
-from lib.flaschen import Flaschen
+from app_modules.flaschen import Flaschen
 import numpy as np
 from PIL import Image
 

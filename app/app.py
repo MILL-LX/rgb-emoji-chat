@@ -4,10 +4,10 @@ import time
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, send
 
-import lib
-from lib.display import Display
-from lib.image_util import images_for_message, image_for_code
-from lib.pi_util import is_raspberry_pi
+from app_modules.display import Display
+import app_modules.display
+from app_modules.image_util import images_for_message, image_for_code
+from app_modules.pi_util import is_raspberry_pi
 
 display = Display()
 colors = [(255,0,0),(0,255,0),(0,0,255)]

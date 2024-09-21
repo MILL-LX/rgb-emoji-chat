@@ -3,7 +3,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 from uniseg.graphemecluster import grapheme_clusters
 
-from lib.pi_util import is_raspberry_pi
+from app_modules.pi_util import is_raspberry_pi
 
 _EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/emoji-glyphs/64x64'
 _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'

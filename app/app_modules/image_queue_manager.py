@@ -5,7 +5,7 @@ import json
 from queue import Queue
 import datetime
 
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO
 
 from app_modules.image_util import image_for_code
 from app_modules.display import Display

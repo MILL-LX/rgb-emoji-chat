@@ -12,6 +12,8 @@ from app_modules.image_util import images_for_message, image_path_for_image_code
 from app_modules.pi_util import is_raspberry_pi
 from app_modules.image_queue_manager import ImageQueueManager
 
+SERVICE_PORT = 3000 if is_raspberry_pi() else 3000#TODO: probably run on port 80 when deployed
+
 app = Flask(__name__)
 socketio = SocketIO(app)
 
@@ -81,11 +83,11 @@ def handle_message(msg):
             time.sleep(0.25)
 
 if __name__ == '__main__':
-    # Combine time with a random value for a more unique seed
+    # Seed our random number generator
     random.seed(time.time() + int.from_bytes(os.urandom(4), 'big'))
 
     display.send_image(images_for_message('🦊', display.size())[0])
 
-    # Specify the IP address and port
+    # Start our server
     host = '0.0.0.0' if is_raspberry_pi() else 'localhost'
     socketio.run(app, host=host, port=3000, allow_unsafe_werkzeug=True)

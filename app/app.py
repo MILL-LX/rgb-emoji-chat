@@ -1,5 +1,7 @@
+import random
 import requests
 import time
+import os
 
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, send
@@ -79,6 +81,9 @@ def handle_message(msg):
             time.sleep(0.25)
 
 if __name__ == '__main__':
+    # Combine time with a random value for a more unique seed
+    random.seed(time.time() + int.from_bytes(os.urandom(4), 'big'))
+
     display.send_image(images_for_message('🦊', display.size())[0])
 
     # Specify the IP address and port

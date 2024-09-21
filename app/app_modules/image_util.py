@@ -11,7 +11,7 @@ _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 IMAGE_DIRECTORY_PATH = '/mnt/peepp-data/images' if is_raspberry_pi() else 'assets/images'
 
 
-def images_for_message(msg, image_size, emoji_only=False):
+def images_for_message(msg, image_size):
     return [image_for_grapheme(g, image_size) for g in _iterate_graphemes(msg)]
 
 def image_for_code(image_code: str, image_size) -> Image.Image:
@@ -103,22 +103,3 @@ def _create_char_image(char: str, image_size, font_path: str = _FONT_PATH) -> Im
     )
 
     return image
-
-
-##########################################################################################################################
-# The following is probable a premature optimization that would let us quickly check if a grapheme had an emjoi glyph PNG
-##########################################################################################################################
-
-# def _map_basenames_to_paths(directory_path):
-#     basename_to_path = {}
-    
-#     for filename in os.listdir(directory_path):
-#         full_path = os.path.join(directory_path, filename)
-#         if os.path.isfile(full_path):
-#             basename = os.path.splitext(filename)[0]
-#             basename_to_path[basename] = full_path
-    
-#     return basename_to_path
-
-# def get_emoji_glyph_paths():
-#     return _map_basenames_to_paths(EMOJI_GLYPHS_PATH)

@@ -18,7 +18,7 @@ socketio = SocketIO(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html', methods=['GET'])
+    return render_template('chat_room.html', methods=['GET'])
 
 # Load the UI for picking the image to display
 @app.route('/ImageSelector')

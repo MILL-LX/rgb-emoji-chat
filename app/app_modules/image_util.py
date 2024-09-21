@@ -8,7 +8,7 @@ from app_modules.pi_util import is_raspberry_pi
 _EMOJI_GLYPHS_DIRECTORY_PATH = 'assets/emoji-glyphs/64x64'
 _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
-IMAGE_DIRECTORY_PATH = '/mnt/peepp-data/images' if is_raspberry_pi() else 'assets/images'
+IMAGE_DIRECTORY_PATH = '/mnt/peepp-data/images' if is_raspberry_pi() else f'{os.getcwd()}/assets/images'
 
 
 def images_for_message(msg, image_size):

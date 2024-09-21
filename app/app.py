@@ -4,12 +4,14 @@ import time
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, send
 
-from app_modules.display import Display
-import app_modules.display
-from app_modules.image_util import images_for_message, image_for_code
+import app_modules.display as display
+from app_modules.image_util import images_for_message, image_for_code, available_image_codes
 from app_modules.pi_util import is_raspberry_pi
+from app_modules.image_queue_manager import ImageQueueManager
 
-display = Display()
+display = display.Display()
+image_queue_manager = ImageQueueManager(display)
+
 colors = [(255,0,0),(0,255,0),(0,0,255)]
 color_index = 0
 
@@ -28,19 +30,17 @@ def serve_image_selecctor_ui():
 # Example request: http://peepp-0000.local:3000/AvailableImageCodes
 @app.route('/AvailableImageCodes', methods=['GET'])
 def avalable_image_codes():
-    return jsonify(app_modules.image_util.available_image_codes())
+    return jsonify(available_image_codes())
 
 
 # Example request: http://peepp-0000.local:3000/ShowImage?image_code=MH%20G%20Collection%20PART/8
 @app.route('/ShowImage', methods=['GET'])
 def show_image():
     image_code = request.args.get('image_code')
-    image = image_for_code(image_code, display.size())
-    if image:
-        display.send_image(image)
+    image_queue_manager.add_image(image_code)
 
     # Always return success to avoid sniffing for errors
-    return jsonify({'status': 'success', 'message': f'Displaying image for code {image_code}'})
+    return jsonify({'status': 'success', 'message': f'Image for code {image_code} queued for display'})
 
 def send_to_rgb_sign(msg: str) -> requests.Response:
     sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'

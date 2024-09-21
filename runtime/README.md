@@ -4,7 +4,9 @@
 
 ### On the Development Laptop
 
-```./runtime/ft-server -D 64x64 --hd-terminal```
+```bash
+./runtime/ft-server -D 64x64 --hd-terminal
+```
 
 ### On the Raspberry Pi
 

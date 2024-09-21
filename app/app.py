@@ -10,11 +10,11 @@ from app_modules.image_util import images_for_message, image_path_for_image_code
 from app_modules.pi_util import is_raspberry_pi
 from app_modules.image_queue_manager import ImageQueueManager
 
-display = display.Display()
-image_queue_manager = ImageQueueManager(display)
-
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+display = display.Display()
+image_queue_manager = ImageQueueManager(display, socketio)
 
 @app.route('/')
 def index():

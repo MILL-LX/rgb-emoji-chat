@@ -39,7 +39,7 @@ def available_image_codes():
 
 def _load_image_for_code(image_directory: str, image_code: str, image_size) -> Image.Image:
     try:
-        image_file = _image_path_for_image_code(image_directory, image_code)
+        image_file = image_path_for_image_code(image_directory, image_code)
         image = Image.open(image_file)
         image = image.convert('RGB')
         if image_size != image.size:
@@ -49,7 +49,7 @@ def _load_image_for_code(image_directory: str, image_code: str, image_size) -> I
         image = None
     return image
 
-def _image_path_for_image_code(image_directory: str, image_code: str) -> str:
+def image_path_for_image_code(image_directory: str, image_code: str) -> str:
     return f'{image_directory}/{image_code}.png'
 
 def _grapheme_to_hex(grapheme: str) -> str:

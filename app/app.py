@@ -6,7 +6,7 @@ from flask_socketio import SocketIO, send
 from flask import send_file
 
 import app_modules.display as display
-from app_modules.image_util import images_for_message, image_for_code, available_image_codes
+from app_modules.image_util import images_for_message, image_path_for_image_code, available_image_codes, IMAGE_DIRECTORY_PATH
 from app_modules.pi_util import is_raspberry_pi
 from app_modules.image_queue_manager import ImageQueueManager
 
@@ -48,8 +48,8 @@ def image_queue_status():
 @app.route('/GetImage', methods=['GET'])
 def get_image():
     image_code = request.args.get('image_code')
-    image_path = image_for_code(image_code, display.size())  # Get the image path
-    return send_file(image_path, mimetype='image/png')  # Serve the PNG file
+    image_path = image_path_for_image_code(IMAGE_DIRECTORY_PATH, image_code)
+    return send_file(image_path, mimetype='image/png')
 
 def send_to_rgb_sign(msg: str) -> requests.Response:
     sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'

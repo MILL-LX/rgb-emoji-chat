@@ -12,9 +12,6 @@ from app_modules.image_queue_manager import ImageQueueManager
 display = display.Display()
 image_queue_manager = ImageQueueManager(display)
 
-colors = [(255,0,0),(0,255,0),(0,0,255)]
-color_index = 0
-
 app = Flask(__name__)
 socketio = SocketIO(app)
 

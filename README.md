@@ -82,3 +82,13 @@ make FT_BACKEND=terminal
 ```
 
 There is a symbolic link from `runtime/ft-server` to the newly built server. Instructions for installing the server as a systemd service are available in [runtime/systemd/README.md](runtime/systemd/README.md).
+
+## MacOs Development Issues
+
+### Update the maximum datagram size
+
+The default maximum datagram size for UDP on MacOs is 16384 bytes. We need to increase this to 64000 bytes to send larger images to the [pi-rgb-sign](https://github.com/mill-lx/pi-rgb-sign). Otherwise, we will get a "Packet too big" error.
+
+```bash
+sudo sysctl -w net.inet.udp.maxdgram=65535
+```

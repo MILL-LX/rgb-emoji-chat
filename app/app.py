@@ -3,6 +3,7 @@ import time
 
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, send
+from flask import send_file
 
 import app_modules.display as display
 from app_modules.image_util import images_for_message, image_for_code, available_image_codes
@@ -29,7 +30,6 @@ def serve_image_selecctor_ui():
 def avalable_image_codes():
     return jsonify(available_image_codes())
 
-
 # Example request: http://peepp-0000.local:3000/ShowImage?image_code=MH%20G%20Collection%20PART/8
 @app.route('/ShowImage', methods=['GET'])
 def show_image():
@@ -38,6 +38,18 @@ def show_image():
 
     # Always return success to avoid sniffing for errors
     return jsonify({'status': 'success', 'message': f'Image for code {image_code} queued for display'})
+
+# Example request: http://peepp-0000.local:3000/ImageQueueStatus
+@app.route('/ImageQueueStatus', methods=['GET'])
+def image_queue_status():
+    queue_status = image_queue_manager.status()
+    return jsonify({'status': 'success', 'queue_status': queue_status})
+
+@app.route('/GetImage', methods=['GET'])
+def get_image():
+    image_code = request.args.get('image_code')
+    image_path = image_for_code(image_code, display.size())  # Get the image path
+    return send_file(image_path, mimetype='image/png')  # Serve the PNG file
 
 def send_to_rgb_sign(msg: str) -> requests.Response:
     sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'

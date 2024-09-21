@@ -1,7 +1,7 @@
 import time
 import threading
 import random
-from collections import Queue
+from queue import Queue
 
 from app_modules.image_util import image_for_code
 from app_modules.display import Display
@@ -42,7 +42,7 @@ class ImageQueueManager:
         self.running = False
         self.display_thread.join()
 
-    def get_image_queue_status(self):
+    def status(self):
         return {
             'current_image_code': self.current_image_code,
             'remaining_image_codes': list(self.image_queue.queue)  # Convert Queue to list for easier viewing

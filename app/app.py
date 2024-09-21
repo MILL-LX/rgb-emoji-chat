@@ -28,7 +28,7 @@ def serve_image_selecctor_ui():
 # Example request: http://peepp-0000.local:3000/AvailableImageCodes
 @app.route('/AvailableImageCodes', methods=['GET'])
 def avalable_image_codes():
-    return jsonify(lib.image_util.available_image_codes())
+    return jsonify(app_modules.image_util.available_image_codes())
 
 
 # Example request: http://peepp-0000.local:3000/ShowImage?image_code=MH%20G%20Collection%20PART/8

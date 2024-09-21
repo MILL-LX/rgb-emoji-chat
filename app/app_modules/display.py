@@ -31,4 +31,5 @@ class Display:
         self.send_image(image)
 
     def send_image(self, image: Image.Image):
-        self._ft.send_array(np.array(image), offset=(0,0,0))
+        if image is not None:
+            self._ft.send_array(np.array(image), offset=(0,0,0))

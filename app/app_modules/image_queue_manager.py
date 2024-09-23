@@ -54,7 +54,9 @@ class ImageQueueManager:
                     event_data = {
                         'event': 'image_updated',
                         'event_time': updated_at_str,
-                        'image_code': image_code
+                        'event_time': updated_at_str,
+                        'current_image_code': self.current_image_code,
+                        'remaining_image_codes': list(self.image_queue.queue)
                     }
                     event_data_json = json.dumps(event_data)
                     self.socketio.emit('image_updates', event_data_json)

@@ -157,6 +157,12 @@
             // $('#messages').append($('<li>').text(msg));
             // window.scrollTo(0, document.body.scrollHeight);
             console.log('mensagem:', msg);
+            let evento_agora = msg["event"];
+            console.log('evento_agora:', evento_agora);
+            console.log('msg.event == image_updated:', msg.event == "image_updated");
+            if (msg.indexOf('image_updated') === 0) {
+                console.log("há um update!");
+            }
             if (msg.event == 'image_updated')
             {
                  console.log('image_updated mensagem:', msg);

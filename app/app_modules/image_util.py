@@ -10,6 +10,8 @@ _FONT_PATH = 'assets/fonts/MILL/Canada Type - Screener SC.ttf'
 
 IMAGE_DIRECTORY_PATH = '/mnt/peepp-data/images' if is_raspberry_pi() else f'{os.getcwd()}/assets/images'
 
+def image_exists_for_code(image_code: str) -> bool:
+    return os.path.exists(image_path_for_image_code(IMAGE_DIRECTORY_PATH, image_code))
 
 def images_for_message(msg, image_size):
     return [image_for_grapheme(g, image_size) for g in _iterate_graphemes(msg)]

@@ -4,6 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Image Selector</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         :root {
             --cor_letras: #000;
@@ -22,7 +23,10 @@
             font-smooth: never !important;
         }
 
-
+        #root {
+            position: relative;
+            height: 96vh;
+        }
 
         .brand {
             width: 80%;
@@ -97,6 +101,36 @@
             caret-color: var(--vermelho);
         }
 
+        #number_input_div {
+            position: relative;
+        }
+
+        #number_input_div::after {
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-color: #600;
+            animation: blink-animation 1s steps(5, start) infinite;
+            -webkit-animation: blink-animation 1s steps(5, start) infinite;
+        }
+
+        .blink {}
+
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        @-webkit-keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+
         #button_go {
             width: 100%;
             height: 5vh;
@@ -138,6 +172,31 @@
             font-size: 10vw;
             font-weight: bolder;
         }
+
+        #queue {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .one_image_in_queue {
+            border-bottom: 1px solid red;
+            padding: 5px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: black;
+            color: red;
+            font-size: 20px;
+        }
+
+        #link_to_museum {
+            width: 100%;
+            text-align: center;
+            background: black;
+            padding: 1em;
+            overflow: hidden;
+        }
     </style>
     <script src="{{ url_for('static', filename='socket.io-4.7.5.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
@@ -175,6 +234,9 @@
                 <div class="key go"><a href="#">GO</a></div>
             </div>
             <div id="queue"></div>
+            <div id="link_to_museum">
+                <a href="https://inscriptions.novellabs.xyz/">Visit Museum</a>
+            </div>
         </div>
     </div>
     <script>
@@ -214,6 +276,7 @@
             queue_now.forEach(element => {
                 console.log("um elemento da queue:", element);
                 queue_elements += '<div class="one_image_in_queue">';
+                queue_elements += '<p>' + element.replace("scaled_images/", "MHI ") + '</p>';
                 queue_elements += '<img src="' + url_da_maquina + '/GetImage?image_code=' + element + '">';
                 queue_elements += '</div>';
             });
@@ -260,49 +323,45 @@
         console.log($(this));
 
         // our url for getting all the available images and collections:
-        let url_all_data = url_da_maquina + '/AvailableImageCodes';
+        // let url_all_data = url_da_maquina + '/AvailableImageCodes';
 
         // this is where we go get all the data available:
-        let all_data = fetch(url_all_data, {
-            method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                // 'Content-Type': 'application/json'
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            // body: JSON.stringify(data) // body data type must match "Content-Type" header
-        })
-            .then(response => console.log("response: ", response))
-            .catch(error => console.log("Error: ", error))
+        // let all_data = fetch(url_all_data, {
+        //     method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        //     mode: 'no-cors', // no-cors, *cors, same-origin
+        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        //     credentials: 'same-origin', // include, *same-origin, omit
+        //     headers: {
+        //         // 'Content-Type': 'application/json'
+        //         'Content-Type': 'application/x-www-form-urlencoded',
+        //     },
+        //     redirect: 'follow', // manual, *follow, error
+        //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //     // body: JSON.stringify(data) // body data type must match "Content-Type" header
+        // })
+        //     .then(response => console.log("response: ", response))
+        //     .catch(error => console.log("Error: ", error))
 
-        console.log("all_data: " + all_data)
+        // console.log("all_data: " + all_data)
 
-        function vai_buscar() {
-
-        }
-
-        function get_image_url(url = '', number) {
-            fetch(url, {
-                method: 'GET', // *GET, POST, PUT, DELETE, etc.
-                mode: 'no-cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                    // 'Content-Type': 'application/json'
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                // body: JSON.stringify(data) // body data type must match "Content-Type" header
-            })
-                // .then(response => console.log("response: " + response))
-                .then($('#number_input').val(''))
-                .catch(error => console.log("Error: " + error));
-        }
+        // function get_image_url(url = '', number) {
+        //     fetch(url, {
+        //         method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        //         mode: 'no-cors', // no-cors, *cors, same-origin
+        //         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        //         credentials: 'same-origin', // include, *same-origin, omit
+        //         headers: {
+        //             // 'Content-Type': 'application/json'
+        //             'Content-Type': 'application/x-www-form-urlencoded',
+        //         },
+        //         redirect: 'follow', // manual, *follow, error
+        //         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //         // body: JSON.stringify(data) // body data type must match "Content-Type" header
+        //     })
+        //         // .then(response => console.log("response: " + response))
+        //         .then($('#number_input').val(''))
+        //         .catch(error => console.log("Error: " + error));
+        // }
 
         // this is our code:
         let button = document.getElementById("button_go");

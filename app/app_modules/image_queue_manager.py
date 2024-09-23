@@ -7,7 +7,7 @@ import datetime
 
 from flask_socketio import SocketIO
 
-from app_modules.image_util import image_for_code
+from app_modules.image_util import image_for_code, image_exists_for_code
 from app_modules.display import Display
 from app_modules.pi_util import is_raspberry_pi
 
@@ -26,6 +26,9 @@ class ImageQueueManager:
         self.display_thread.start()
 
     def add_image(self, image_code):
+        if not image_exists_for_code(image_code):
+            return
+
         self.image_queue.put(image_code)
 
         updated_at = time.time()

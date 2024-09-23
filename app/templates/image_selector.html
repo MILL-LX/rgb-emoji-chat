@@ -153,13 +153,14 @@
         //     $('#messages').append($('<li>').text(msg));
         //     window.scrollTo(0, document.body.scrollHeight);
         //   });
-          socket.on('image_updated', (msg) => {
+          socket.on('image_updates', (msg) => {
             // $('#messages').append($('<li>').text(msg));
             // window.scrollTo(0, document.body.scrollHeight);
-            // console.log('mensagem:', msg);
+            console.log('mensagem:', msg);
             if (msg.event == 'image_updated')
             {
                  console.log('image_updated mensagem:', msg);
+                 update_icon(msg);
                  //frame changed
                  // update icon showed on frame frame
                 }
@@ -171,6 +172,37 @@
             }
           });
         });
+
+        function update_queue(msg) {
+            // foreach (msg)
+        }
+
+        function update_icon(msg) {
+            // foreach (msg)
+            let new_icon = msg.image_code;
+            let url_start = 'http://10.10.10.52:GetImage?image_code=';
+            let complete_url = url_start + new_icon;
+            // fetch complete_url
+            // get result as your URI
+            // change background:
+            fetch(complete_url, {
+                method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                mode: 'no-cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    // 'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                // body: JSON.stringify(data) // body data type must match "Content-Type" header
+            })
+                .then(response => console.log("response: " + response))
+                .then($('.image_projection').css('background-image', 'url(' + image_to_show + ')'))
+                .catch(error => console.log("Error: " + error));
+
+        }
       </script>
 </head>
 
@@ -205,6 +237,7 @@
                 <div class="key delete"><a href="#">&lbarr;</a></div>
                 <div class="key go"><a href="#">GO</a></div>
             </div>
+            <div id="queue"></div>
         </div>
     </div>
     <script>

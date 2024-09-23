@@ -30,7 +30,14 @@ class ImageQueueManager:
 
         updated_at = time.time()
         updated_at_str = datetime.datetime.fromtimestamp(updated_at, datetime.timezone.utc).isoformat() + 'Z'  # Use UTC time
-        event_data_json = json.dumps({'event': 'image_queue_updated', 'event_time': updated_at_str, 'image_code': image_code})
+        event_data = {
+            'event': 'image_queue_updated',
+            'event_time': updated_at_str,
+            'added_image_code': image_code,
+            'current_image_code': self.current_image_code,
+            'remaining_image_codes': list(self.image_queue.queue)
+        }
+        event_data_json = json.dumps(event_data)
         self.socketio.emit('image_updates', event_data_json)
 
     def display_images(self):
@@ -44,7 +51,12 @@ class ImageQueueManager:
 
                     updated_at = time.time()
                     updated_at_str = datetime.datetime.fromtimestamp(updated_at, datetime.timezone.utc).isoformat() + 'Z'  # Use UTC time
-                    event_data_json = json.dumps({'event': 'image_updated', 'event_time': updated_at_str, 'image_code': image_code})
+                    event_data = {
+                        'event': 'image_updated',
+                        'event_time': updated_at_str,
+                        'image_code': image_code
+                    }
+                    event_data_json = json.dumps(event_data)
                     self.socketio.emit('image_updates', event_data_json)
                     
                     time.sleep(IMAGE_DURATION)

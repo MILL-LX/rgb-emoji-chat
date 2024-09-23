@@ -40,20 +40,20 @@ def available_image_codes():
 def _load_image_for_code(image_directory: str, image_code: str, image_size) -> Image.Image:
     try:
         image_file = image_path_for_image_code(image_directory, image_code)
-        
-        image = Image.open(image_file)
+        image = Image.open(image_file).convert("RGBA")
         if image.mode == 'RGBA':
-            background = Image.new('RGB', image.size, (255, 0, 0))
-            background.paste(image, (0, 0), image)
-            image = background
-        else:
-            image = image.convert('RGB')
+            red_background = Image.new("RGBA", image.size, (127, 0, 0, 255))
+            image = Image.alpha_composite(red_background, image)
+
+        image = image.convert('RGB')
 
         if image_size != image.size:
             sampling_filter = Image.LANCZOS if image_size > image.size else Image.BICUBIC
             image = image.resize(image_size, sampling_filter)
+
     except FileNotFoundError as e:
         image = None
+
     return image
 
 def image_path_for_image_code(image_directory: str, image_code: str) -> str:

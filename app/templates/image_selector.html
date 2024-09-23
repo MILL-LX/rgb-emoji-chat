@@ -143,40 +143,38 @@
     <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
     <script>
         $(function () {
-          var socket = io('/');
-        //   $('form').submit(function(){
-        //     socket.send($('#m').val());
-        //     $('#m').val('');
-        //     return false;
-        //   });
-        //   socket.on('message', (msg) => {
-        //     $('#messages').append($('<li>').text(msg));
-        //     window.scrollTo(0, document.body.scrollHeight);
-        //   });
-          socket.on('image_updates', (msg) => {
-            // $('#messages').append($('<li>').text(msg));
-            // window.scrollTo(0, document.body.scrollHeight);
-            console.log('mensagem:', msg);
-            let evento_agora = msg["event"];
-            console.log('evento_agora:', evento_agora);
-            console.log('msg.event == image_updated:', msg.event == "image_updated");
-            if (msg.indexOf('image_updated') === 0) {
-                console.log("há um update!");
-            }
-            if (msg.event == 'image_updated')
-            {
-                 console.log('image_updated mensagem:', msg);
-                 update_icon(msg);
-                 //frame changed
-                 // update icon showed on frame frame
+            var socket = io('/');
+            //   $('form').submit(function(){
+            //     socket.send($('#m').val());
+            //     $('#m').val('');
+            //     return false;
+            //   });
+            //   socket.on('message', (msg) => {
+            //     $('#messages').append($('<li>').text(msg));
+            //     window.scrollTo(0, document.body.scrollHeight);
+            //   });
+            localStorage.debug = '*';
+            socket.on('image_updates', (msg) => {
+                // $('#messages').append($('<li>').text(msg));
+                // window.scrollTo(0, document.body.scrollHeight);
+                // console.log('mensagem:', msg);
+                mg = JSON.parse(msg);
+                // console.log('mensagem json:', mg);
+                let evento_agora = mg.event;
+                // console.log('evento_agora:', evento_agora);
+                // console.log('msg.event == image_updated:', mg.event == "image_updated");
+                if (mg.event == 'image_updated') {
+                    console.log('image_updated mensagem:', mg);
+                    update_icon(mg);
+                    //frame changed
+                    // update icon showed on frame frame
                 }
-                else if (msg.event == 'image_queue_updated')
-                {
-                 console.log('image_queue_updated mensagem:', msg);
-                //queue changed
-                // update queue representation
-            }
-          });
+                else if (mg.event == 'image_queue_updated') {
+                    console.log('image_queue_updated mensagem:', mg);
+                    //queue changed
+                    // update queue representation
+                }
+            });
         });
 
         function update_queue(msg) {
@@ -186,8 +184,9 @@
         function update_icon(msg) {
             // foreach (msg)
             let new_icon = msg.image_code;
-            let url_start = 'http://10.10.10.52:GetImage?image_code=';
+            let url_start = 'http://10.10.10.52:3000/GetImage?image_code=';
             let complete_url = url_start + new_icon;
+            console.log("complete_url_to_fetch", complete_url);
             // fetch complete_url
             // get result as your URI
             // change background:
@@ -204,12 +203,20 @@
                 referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 // body: JSON.stringify(data) // body data type must match "Content-Type" header
             })
-                .then(response => console.log("response: " + response))
-                .then($('.image_projection').css('background-image', 'url(' + image_to_show + ')'))
+                .then(response => {
+                    // console.log("response: ", response)
+                    // let resposta_json = resposta_json.url;
+                    console.log("resposta url da imagem: " + response.url)
+                    return response.url;
+                })
+                .then(url => {
+                    console.log(url);
+                    $('.image_projection').css('background-image', 'url(' + url + ')')
+                })
                 .catch(error => console.log("Error: " + error));
 
         }
-      </script>
+    </script>
 </head>
 
 <body>
@@ -327,12 +334,12 @@
                 .then($('#number_input').val(''))
                 .catch(error => console.log("Error: " + error));
 
-                // we're just getting them from google storage, because they're there, but we can also serve them locally, as we're doing with the other assets...
+            // we're just getting them from google storage, because they're there, but we can also serve them locally, as we're doing with the other assets...
             let image_to_show = 'https://storage.googleapis.com/mhi-ordinals-assets/mhi/';
             image_to_show = image_to_show + '' + nivalue + '.png';
             console.log("image_to_show - ", image_to_show);
             $('.image_projection').css('background-image', 'url(' + image_to_show + ')');
-            
+
         }, false);
 
         $(document).on('click', '.number_key', function () {

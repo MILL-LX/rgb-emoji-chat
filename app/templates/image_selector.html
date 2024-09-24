@@ -222,7 +222,6 @@
                 /* max-height: 100vh; */
             }
         }
-
     </style>
     <script src="{{ url_for('static', filename='socket.io-4.7.5.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
@@ -326,6 +325,7 @@
 
 
         const full = location.protocol + '//' + location.host;
+        console.log("full address: ", full);
         // our server's address:
         // let url_da_maquina = 'http://peepp-0000.local:3000';
         let url_da_maquina = full;
@@ -339,6 +339,7 @@
             // if we detect a change in the current-showing image OR in the queue:
             socket.on('image_updates', (msg) => {
                 mg = JSON.parse(msg);
+                console.log("mg: ", mg);
                 let evento_agora = mg.event;
                 // if the image changed:
                 // we get the image event and send it to the function that changes it!

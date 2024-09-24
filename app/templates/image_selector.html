@@ -213,6 +213,16 @@
             text-decoration: none;
             text-transform: uppercase;
         }
+
+
+        /* a possible desktop version starts here: */
+        @media only screen and (min-width: 1024px) {
+            body {
+                /* background: red; */
+                /* max-height: 100vh; */
+            }
+        }
+
     </style>
     <script src="{{ url_for('static', filename='socket.io-4.7.5.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
@@ -314,8 +324,11 @@
         });
 
 
+
+        const full = location.protocol + '//' + location.host;
         // our server's address:
-        let url_da_maquina = 'http://peepp-0000.local:3000'
+        // let url_da_maquina = 'http://peepp-0000.local:3000';
+        let url_da_maquina = full;
 
         // we're using socket.io to keep up with things:
         $(function () {

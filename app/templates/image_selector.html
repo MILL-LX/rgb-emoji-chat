@@ -3,7 +3,7 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <title>Image Selector</title>
+    <title>Exhibit your MHI</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         :root {
@@ -34,7 +34,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-evenly;
-            margin: 1em auto;
+            margin: 10px auto;
         }
 
         .brand img {
@@ -45,7 +45,7 @@
 
         .logo_mhi_head {
             max-height: 50px;
-            padding-bottom: 25px;
+            padding-bottom: 15px;
         }
 
 
@@ -107,17 +107,27 @@
 
         #number_input_div::after {
             position: absolute;
-            left: 20px;
-            top: 15px;
+            left: 100px;
+            top: 40px;
             content: '';
             width: 20px;
-            height: 20px;
+            height: 5px;
             background-color: #600;
             animation: blink-animation 1s steps(5, start) infinite;
             -webkit-animation: blink-animation 1s steps(5, start) infinite;
         }
 
-        .blink {}
+        #number_input_div::before {
+            position: absolute;
+            left: 20px;
+            top: 4px;
+            color: var(--vermelho);
+            font-size: 10vw;
+            content: 'MHI';
+            /* width: 20px;
+            height: 20px;
+            background-color: #600; */
+        }
 
         @keyframes blink-animation {
             to {
@@ -170,7 +180,7 @@
             color: var(--cor_letras);
             text-decoration: none;
             font-size: 10vw;
-            font-weight: bolder;
+            font-weight: lighter;
         }
 
         #queue {
@@ -191,11 +201,17 @@
         }
 
         #link_to_museum {
-            width: 100%;
+            /* width: 100%; */
             text-align: center;
             background: black;
             padding: 1em;
             overflow: hidden;
+        }
+
+        #link_to_museum>a {
+            color: var(--vermelho);
+            text-decoration: none;
+            text-transform: uppercase;
         }
     </style>
     <script src="{{ url_for('static', filename='socket.io-4.7.5.min.js') }}"></script>
@@ -234,31 +250,93 @@
                 <div class="key go"><a href="#">GO</a></div>
             </div>
             <div id="queue"></div>
-            <div id="link_to_museum">
-                <a href="https://inscriptions.novellabs.xyz/">Visit Museum</a>
-            </div>
+        </div>
+        <div id="link_to_museum">
+            <a href="https://inscriptions.novellabs.xyz/">Visit Museum</a>
         </div>
     </div>
     <script>
 
 
+        // this is our code:
+        let button = document.getElementById("button_go");
+        let number_input = document.getElementById("number_input");
+        let collection = "scaled_images";
+
+        // when the GO button is clicked, we build the desired url:
+        button.addEventListener("click", function (e) {
+            let nivalue = number_input.value;
+            let url = url_da_maquina + '/ShowImage?image_code=';
+            url = url + '' + collection + '/' + nivalue;
+
+            // we simply do a GET to the desired url, and then clean the input field.
+            fetch(url, {
+                method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                mode: 'no-cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    // 'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer'
+            })
+                // .then(response => console.log("response: " + response))
+                .then($('#number_input').val(''))
+                .catch(error => console.log("Error: " + error));
+        }, false);
+
+        // this is how we input numbers using a 'fake' keypad:
+        $(document).on('click', '.number_key', function () {
+            let este_numero = $(this).text();
+            // console.log("este_numero: " + este_numero);
+            let numero_ate_agora = $('#number_input').val();
+            // console.log("numero_ate_agora: " + numero_ate_agora);
+            let numero_final = numero_ate_agora + este_numero;
+            // console.log("numero_final: " + numero_final);
+            $('#number_input').val(numero_final);
+        });
+
+        // and this is how to delete the last number:
+        $(document).on('click', '.delete', function () {
+            let numero_ate_agora = $('#number_input').val();
+            // console.log("numero_ate_agora: " + numero_ate_agora);
+            let numero_final = numero_ate_agora.substring(0, numero_ate_agora.length - 1);
+            // console.log("numero_final: " + numero_final);
+            $('#number_input').val(numero_final);
+        });
+
+        // the submit is hidden, but when we click GO, we also click it:
+        $(document).on('click', '.go a', function (e) {
+            e.preventDefault();
+            $('#button_go').click();
+        });
+
+
+        // our server's address:
         let url_da_maquina = 'http://peepp-0000.local:3000'
+
+        // we're using socket.io to keep up with things:
         $(function () {
             // we open a socket to watch for changs in the queue or in the current-showing image:
             var socket = io('/');
             localStorage.debug = '*';
 
             // if we detect a change in the current-showing image OR in the queue:
-            // if it's just the image that changed:
             socket.on('image_updates', (msg) => {
                 mg = JSON.parse(msg);
                 let evento_agora = mg.event;
+                // if the image changed:
                 // we get the image event and send it to the function that changes it!
                 if (mg.event == 'image_updated') {
                     // frame changed
                     update_icon(mg);
+                    // we also update the queue, to keep everything in sync:
+                    update_queue(mg);
                 }
-                // if the queue changed, we send the changes to our function:
+                // if the queue changed:
+                // we send the changes to our function:
                 else if (mg.event == 'image_queue_updated') {
                     // queue changed
                     update_queue(mg);
@@ -266,33 +344,35 @@
             });
         });
 
+        // we read the 'remaining_image_codes' and build a list from there.
         function update_queue(msg) {
-            // foreach (msg)
-            // let json = JSON.parse(msg);
             // console.log('image_queue_updated mensagem:', JSON.parse(msg));
             let queue_now = msg.remaining_image_codes;
-            console.log('queue_now:', queue_now);
+            // console.log('queue_now:', queue_now);
             let queue_elements = "";
+            let number_now = 0;
+            // for each element, we build a nice div:
             queue_now.forEach(element => {
-                console.log("um elemento da queue:", element);
+                number_now++;
+                let this_image_text = "#" + number_now.toString() + " / MHI // ";
+                // console.log("um elemento da queue:", element);
                 queue_elements += '<div class="one_image_in_queue">';
-                queue_elements += '<p>' + element.replace("scaled_images/", "MHI ") + '</p>';
+                queue_elements += '<p>' + element.replace("scaled_images/", this_image_text) + '</p>';
                 queue_elements += '<img src="' + url_da_maquina + '/GetImage?image_code=' + element + '">';
                 queue_elements += '</div>';
             });
-            console.log("queue_elements:", queue_elements);
+            // console.log("queue_elements:", queue_elements);
+            // when everything is accounted for, we 'redo' the queue's html content:
             $('#queue').html(queue_elements);
         }
 
+        // when the image in the frame changes, we fetch it and show it on our virtual frame on the screen:
         function update_icon(msg) {
             // foreach (msg)
             let new_icon = msg.current_image_code;
             let url_start = url_da_maquina + '/GetImage?image_code=';
             let complete_url = url_start + new_icon;
-            console.log("complete_url_to_fetch", complete_url);
-            // fetch complete_url
-            // get result as your URI
-            // change background:
+            // console.log("complete_url_to_fetch", complete_url);
             fetch(complete_url, {
                 method: 'GET', // *GET, POST, PUT, DELETE, etc.
                 mode: 'no-cors', // no-cors, *cors, same-origin
@@ -308,124 +388,16 @@
             })
                 .then(response => {
                     // console.log("response: ", response)
-                    // let resposta_json = resposta_json.url;
-                    console.log("resposta url da imagem: " + response.url)
+                    // console.log("resposta url da imagem: " + response.url)
                     return response.url;
                 })
                 .then(url => {
-                    console.log(url);
+                    // console.log(url);
+                    // this is where we change the frame, via css:
                     $('.image_projection').css('background-image', 'url(' + url + ')')
                 })
                 .catch(error => console.log("Error: " + error));
-
         }
-
-        console.log($(this));
-
-        // our url for getting all the available images and collections:
-        // let url_all_data = url_da_maquina + '/AvailableImageCodes';
-
-        // this is where we go get all the data available:
-        // let all_data = fetch(url_all_data, {
-        //     method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        //     mode: 'no-cors', // no-cors, *cors, same-origin
-        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        //     credentials: 'same-origin', // include, *same-origin, omit
-        //     headers: {
-        //         // 'Content-Type': 'application/json'
-        //         'Content-Type': 'application/x-www-form-urlencoded',
-        //     },
-        //     redirect: 'follow', // manual, *follow, error
-        //     referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //     // body: JSON.stringify(data) // body data type must match "Content-Type" header
-        // })
-        //     .then(response => console.log("response: ", response))
-        //     .catch(error => console.log("Error: ", error))
-
-        // console.log("all_data: " + all_data)
-
-        // function get_image_url(url = '', number) {
-        //     fetch(url, {
-        //         method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        //         mode: 'no-cors', // no-cors, *cors, same-origin
-        //         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        //         credentials: 'same-origin', // include, *same-origin, omit
-        //         headers: {
-        //             // 'Content-Type': 'application/json'
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //         },
-        //         redirect: 'follow', // manual, *follow, error
-        //         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //         // body: JSON.stringify(data) // body data type must match "Content-Type" header
-        //     })
-        //         // .then(response => console.log("response: " + response))
-        //         .then($('#number_input').val(''))
-        //         .catch(error => console.log("Error: " + error));
-        // }
-
-        // this is our code:
-        let button = document.getElementById("button_go");
-        let number_input = document.getElementById("number_input");
-        let collection = "scaled_images";
-        button.addEventListener("click", function (e) {
-            // console.log('click!');
-            let nivalue = number_input.value;
-            // console.log("nivalue - ", nivalue);
-            let url = url_da_maquina + '/ShowImage?image_code=';
-            url = url + '' + collection + '/' + nivalue;
-            // console.log(url);
-
-            // fetch image code from 
-
-            fetch(url, {
-                method: 'GET', // *GET, POST, PUT, DELETE, etc.
-                mode: 'no-cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                    // 'Content-Type': 'application/json'
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                // body: JSON.stringify(data) // body data type must match "Content-Type" header
-            })
-                // .then(response => console.log("response: " + response))
-                .then($('#number_input').val(''))
-                .catch(error => console.log("Error: " + error));
-
-            // we're just getting them from google storage, because they're there, but we can also serve them locally, as we're doing with the other assets...
-            // let image_to_show = 'https://storage.googleapis.com/mhi-ordinals-assets/mhi/';
-            // image_to_show = image_to_show + '' + nivalue + '.png';
-            // console.log("image_to_show - ", image_to_show);
-            // $('.image_projection').css('background-image', 'url(' + image_to_show + ')');
-
-        }, false);
-
-        $(document).on('click', '.number_key', function () {
-            let este_numero = $(this).text();
-            // console.log("este_numero: " + este_numero);
-            let numero_ate_agora = $('#number_input').val();
-            // console.log("numero_ate_agora: " + numero_ate_agora);
-            let numero_final = numero_ate_agora + este_numero;
-            // console.log("numero_final: " + numero_final);
-            $('#number_input').val(numero_final);
-        });
-
-        $(document).on('click', '.delete', function () {
-            let numero_ate_agora = $('#number_input').val();
-            // console.log("numero_ate_agora: " + numero_ate_agora);
-            let numero_final = numero_ate_agora.substring(0, numero_ate_agora.length - 1);
-            // console.log("numero_final: " + numero_final);
-            $('#number_input').val(numero_final);
-        });
-
-        $(document).on('click', '.go a', function (e) {
-            e.preventDefault();
-            $('#button_go').click();
-        });
-
-
 
     </script>
 

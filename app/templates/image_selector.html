@@ -257,6 +257,7 @@
             <div class="image_projection"></div>
             <div id="current_placeholder"></div>
         </div>
+        <div id="messsages"></div>
         <div id="choose_image">
             <div id="number_input_div">
                 <input readonly id="number_input" type="p" pattern="[0-9][0-9][0-9][0-9]" inputmode="numeric"
@@ -311,7 +312,15 @@
                 referrerPolicy: 'no-referrer'
             })
                 // .then(response => console.log("response: " + response))
-                .then($('#number_input').val(''))
+                .then(response => {
+                    console.log("response.status: ", response.status)
+                    if (response.status == '404') {
+                        console.log("this image does not exist: ")
+                    } else {
+                        do_the_animation(response);
+                    }
+                    $('#number_input').val('')
+                })
                 .catch(error => console.log("Error: " + error));
         }, false);
 
@@ -434,6 +443,30 @@
                     $('.image_projection').css('background-image', 'url(' + url + ')')
                 })
                 .catch(error => console.log("Error: " + error));
+        }
+
+        function do_the_animation(response) {
+            console.log("response on the animation function!", response);
+            // let this_image = response.url;
+            let number_now = response.url.split("/").pop();
+            let link_to_get_image = response.url.replace("ShowImage", "GetImage");
+            let animation_elements = "";
+            let this_image_text = "ADDED / MHI // " + "# " + number_now.toString() + " TO QUEUE";
+            // console.log("um elemento da queue:", element);
+            animation_elements += '<div class="one_image_in_queue">';
+            animation_elements += '<p>' + this_image_text + '</p>';
+            animation_elements += '<img src="' + link_to_get_image + '">';
+            animation_elements += '</div>';
+
+            $('#messsages').html(animation_elements);
+
+            $("#messsages").fadeIn("fast");
+
+            console.log("animation_elements: ", animation_elements);
+
+            setTimeout(function () {
+                $("#messsages").fadeOut("fast");
+            }, 3000);
         }
 
     </script>

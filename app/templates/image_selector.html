@@ -6,6 +6,11 @@
     <title>Exhibit your MHI</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
+        @font-face {
+            font-family: "jwpixel";
+            src: url("{{ url_for('static', filename='jwpixel.otf') }}") format("opentype");
+        }
+
         :root {
             --cor_letras: #000;
             --degrade_1: #130e16;
@@ -19,7 +24,7 @@
             padding: 0;
             background: rgb(2, 0, 36);
             background: linear-gradient(172deg, rgba(2, 0, 36, 1) 0%, rgba(19, 14, 22, 1) 35%, rgba(41, 38, 67, 1) 100%);
-            font-family: monospace;
+            font-family: "jwpixel", monospace;
             font-smooth: never !important;
         }
 
@@ -80,6 +85,18 @@
             background-position: center center;
         }
 
+        #current_placeholder {
+            position: absolute;
+            /* border: 1px solid white; */
+            width: 50%;
+            left: 15%;
+            top: 76%;
+            height: 30px;
+            color: var(--vermelho);
+            font-weight: initial;
+            font-size: 15px;
+        }
+
         .list_collections li {
             color: #fff;
         }
@@ -99,6 +116,7 @@
             margin-bottom: 5px;
             caret-shape: block;
             caret-color: var(--vermelho);
+            font-family: "jwpixel" !important;
         }
 
         #number_input_div {
@@ -237,6 +255,7 @@
         <div class="frame">
             <img src="{{ url_for('static', filename='/frame/frame_background.png') }}" alt="Frame Background Image">
             <div class="image_projection"></div>
+            <div id="current_placeholder"></div>
         </div>
         <div id="choose_image">
             <div id="number_input_div">
@@ -408,6 +427,10 @@
                 .then(url => {
                     // console.log(url);
                     // this is where we change the frame, via css:
+
+                    let number_now_for_placeholder = url.split("/").pop();
+
+                    $('#current_placeholder').text("current #" + number_now_for_placeholder);
                     $('.image_projection').css('background-image', 'url(' + url + ')')
                 })
                 .catch(error => console.log("Error: " + error));

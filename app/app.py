@@ -8,7 +8,7 @@ from flask_socketio import SocketIO, send
 from flask import send_file
 
 import app_modules.display as display
-from app_modules.image_util import images_for_message, image_path_for_image_code, available_image_codes, IMAGE_DIRECTORY_PATH
+from app_modules.image_util import images_for_message, image_path_for_image_code, available_image_codes, image_exists_for_code, IMAGE_DIRECTORY_PATH
 from app_modules.pi_util import is_raspberry_pi
 from app_modules.image_queue_manager import ImageQueueManager
 
@@ -38,10 +38,11 @@ def avalable_image_codes():
 @app.route('/ShowImage', methods=['GET'])
 def show_image():
     image_code = request.args.get('image_code')
-    image_queue_manager.add_image(image_code)
-
-    # Always return success to avoid sniffing for errors
-    return jsonify({'status': 'success', 'message': f'Image for code {image_code} queued for display'})
+    if image_exists_for_code(image_code):
+        image_queue_manager.add_image(image_code)
+        return jsonify({'status': 'success', 'message': f'Image for code {image_code} queued for display'})
+    else:
+        return jsonify({'status': 'failure', 'message': f'Image for code {image_code} does not exist'}), 404
 
 # Example request: http://peepp-0000.local:3000/ImageQueueStatus
 @app.route('/ImageQueueStatus', methods=['GET'])

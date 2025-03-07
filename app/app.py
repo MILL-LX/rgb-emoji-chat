@@ -1,6 +1,7 @@
 import random
 import requests
 import time
+import threading
 import os
 
 from flask import Flask, render_template, jsonify, request
@@ -56,17 +57,21 @@ def get_image():
     image_path = image_path_for_image_code(IMAGE_DIRECTORY_PATH, image_code)
     return send_file(image_path, mimetype='image/png')
 
-def send_to_rgb_sign(msg: str) -> requests.Response:
-    sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'
-    sign_url = f'http://{sign_host}/animate/ShowMessage'
-    params = {'message': msg}
-    try:
-        response = requests.get(sign_url, params=params)
-        return response
-    except requests.exceptions.RequestException as e:
-        print(f"Error sending message to RGB sign: {e}")
-        return None
+def send_to_rgb_sign(msg: str):
+    def request():
+        sign_host = 'pi-matrix.local' if is_raspberry_pi() else 'localhost'
+        sign_url = f'http://{sign_host}/animate/ShowMessage'
+        params = {'message': msg}
+        try:
+            response = requests.get(sign_url, params=params, timeout=2)  # Set timeout (2 seconds)
+            return response
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending message to RGB sign: {e}")
+            return None
 
+    thread = threading.Thread(target=request, daemon=True)
+    thread.start()
+    
 @socketio.on('message')
 def handle_message(msg):
     send(msg, broadcast=True)
